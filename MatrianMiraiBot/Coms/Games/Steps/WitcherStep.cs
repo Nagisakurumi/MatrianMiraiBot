@@ -25,57 +25,43 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         }
 
-
         public override async Task DoAction(GameCommand command)
         {
             var witcher = command.GameInfo.GetPlayerByIdentity(IdentityType.Witcher).FirstOrDefault() as Witcher;
-            if(witcher != null && witcher.PlayerId != command.GameInput.Sender.Id)
+            if (!CheckIdentity(command))
             {
-                await command.GameInput.ReplyTemp("只有女巫才能操作!");
+                await command.GameInput.ReplyTemp("只有女巫才可以操作!");
                 return;
             }
-            try
+            if (command.Commands.Where(p => p.Command.Equals("empty")).Count() > 0)
             {
-                if(command.Commands.Where(p => p.Command.Equals("empty")).Count() > 0)
-                {
-                    command.GameState = NextState;
-                    command.IsRunNextState = true;
-                    return;
-                }
+                Next(command);
+                return;
+            }
 
-                foreach (var item in command.Commands)
+            foreach (var item in command.Commands)
+            {
+                //救人命令
+                if (item.Command.Equals("save") && witcher.Antidote > 0)
                 {
-                    //救人命令
-                    if (item.Command.Equals("save") && witcher.Antidote > 0)
+                    witcher.Antidote--;
+                    command.GameInfo.WolferWillKilled = null;
+                    //await command.GameInput.ReplyTemp("成功救下!");
+                }
+                else if (item.Command.Equals("poison") && witcher.Poison > 0)
+                {
+                    int index = Convert.ToInt32(item.Contents.First());
+                    //获取期望毒杀的目标
+                    var player = command.GameInfo.GetPlayer(index);
+                    if (player != null)
                     {
-                        witcher.Antidote--;
-                        command.GameInfo.WolferWillKilled = null;
-                        //await command.GameInput.ReplyTemp("成功救下!");
-                    }
-                    else if (item.Command.Equals("poison") && witcher.Poison > 0)
-                    {
-                        try
-                        {
-                            int index = Convert.ToInt32(item.Contents.First());
-                            //获取期望毒杀的目标
-                            var player = command.GameInfo.CanKilledList[index];
-                            command.GameInfo.PoisonKilled = player;
-                            witcher.Poison--;
-                        }
-                        catch(Exception)
-                        {
-                            //await command.GameInput.ReplyTemp("毒杀命令错误!");
-                        }
+                        command.GameInfo.PoisonKilled = player;
+                        witcher.Poison--;
                     }
                 }
+            }
 
-                command.GameState = NextState;
-                command.IsRunNextState = true;
-            }
-            catch (Exception)
-            {
-                await command.GameInput.ReplyTemp("命令异常");
-            }
+            Next(command);
         }
 
         public override string GetInitMessage(GameCommand command)
@@ -101,6 +87,11 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             }
             content += "\n 使用命令 (-empty) 表示空过不操作!";
             return content;
+        }
+
+        public override bool IsEmpty(GameCommand command)
+        {
+            throw new NotImplementedException();
         }
     }
 }

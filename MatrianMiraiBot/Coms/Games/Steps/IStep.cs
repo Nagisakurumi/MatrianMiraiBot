@@ -82,5 +82,25 @@ namespace MatrianMiraiBot.Coms.Games.Steps
         /// <param name="command"></param>
         /// <returns></returns>
         public abstract bool IsEmpty(GameCommand command);
+
+        /// <summary>
+        /// 进入下一个阶段
+        /// </summary>
+        public virtual void Next(GameCommand command)
+        {
+            command.GameState = NextState;
+            command.IsRunNextState = true;
+        }
+        /// <summary>
+        /// 检测身份是否对上
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public bool CheckIdentity(GameCommand command)
+        {
+            IPlayer player = command.GameInfo.GetPlayerById(command.GameInput.Sender.Id);
+            if (player == null) return false;
+            return command.GameInfo.GetPlayerByIdentity(IdentityType).Contains(player);
+        }
     }
 }

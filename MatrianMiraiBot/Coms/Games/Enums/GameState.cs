@@ -45,6 +45,10 @@ namespace MatrianMiraiBot.Coms.Games.Enums
         /// </summary>
         ProphetStep,
         /// <summary>
+        /// 发言阶段
+        /// </summary>
+        TalkAboutStep,
+        /// <summary>
         /// 白天投票阶段
         /// </summary>
         VotedStep,

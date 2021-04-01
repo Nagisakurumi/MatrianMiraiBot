@@ -52,6 +52,10 @@ namespace MatrianMiraiBot.Coms.Games
         /// </summary>
         public IPlayer GunKilled { get; set; }
         /// <summary>
+        /// 日期
+        /// </summary>
+        public int Date { get; set; }
+        /// <summary>
         /// 添加基础玩家信息
         /// </summary>
         /// <param name="baseInfo"></param>
@@ -113,9 +117,9 @@ namespace MatrianMiraiBot.Coms.Games
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IPlayer GetPlayerById(long id)
+        public IPlayer GetPlayerById(long id, bool? isAlive = true)
         {
-            return Players.Where(p => p.PlayerId == id).FirstOrDefault();
+            return Players.Where(p => p.PlayerId == id && (isAlive == null || isAlive == p.IsAlive)).FirstOrDefault();
         }
 
         /// <summary>
@@ -137,6 +141,114 @@ namespace MatrianMiraiBot.Coms.Games
         public IPlayer GetPlayerByName(string name)
         {
             return Players.Where(p => p.PlayerNickName.Equals(name)).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// 初始化死亡
+        /// </summary>
+        public void InitKilleds()
+        {
+            WolferWillKilled = null;
+            PoisonKilled = null;
+            GunKilled = null;
+        }
+
+        /// <summary>
+        /// 获取玩家
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public IPlayer GetPlayer(int index)
+        {
+            if (index >= CanKilledList.Count || index < 0)
+                return null;
+            return CanKilledList[index];
+        }
+        /// <summary>
+        /// 获取当晚死的所有玩家
+        /// </summary>
+        /// <returns></returns>
+        public List<IPlayer> GetAllKilledPlayer()
+        {
+            var list = new List<IPlayer>();
+            if (WolferWillKilled != null && !list.Contains(WolferWillKilled))
+            {
+                list.Add(WolferWillKilled);
+            }
+            if (PoisonKilled != null && !list.Contains(PoisonKilled))
+            {
+                list.Add(PoisonKilled);
+            }
+            if (GunKilled != null && !list.Contains(GunKilled))
+            {
+                list.Add(GunKilled);
+            }
+            return list;
+        }
+        /// <summary>
+        /// 重置投票
+        /// </summary>
+        public void ResetVoted()
+        {
+            Players.ForEach(p => p.VotedPlayer = null);
+        }
+
+        /// <summary>
+        /// 获取得票率最高的玩家
+        /// </summary>
+        /// <returns></returns>
+        public KeyValuePair<IPlayer, double> GetMaxVotedPlayer()
+        {
+            var dict = new Dictionary<IPlayer, double>();
+            CanKilledList.ForEach(p => {
+            if (p.VotedPlayer != null)
+            {
+                if (dict.ContainsKey(p.VotedPlayer))
+                {
+                    dict[p.VotedPlayer] += p.IsSheriff ? 1.5 : 1;
+                }
+                else
+                {
+                    dict.Add(p.VotedPlayer, p.IsSheriff ? 1.5 : 1);
+                    }
+                }
+            });
+
+
+
+            if (dict.Count == 0)
+            {
+                return new KeyValuePair<IPlayer, double>(null, 0);
+            }
+            else
+            {
+                var target = dict.GroupBy(p => p.Value).Select(p => new { Player = p.First().Key, Count = p.First().Value }).First();
+                return new KeyValuePair<IPlayer, double>(target.Player, target.Count);
+            }
+        }
+
+        /// <summary>
+        /// 是否游戏结束
+        /// </summary>
+        /// <returns></returns>
+        public bool? IsGameOver()
+        {
+            if(GetPlayerByIdentity(IdentityType.Wolfer).Count() == 0)
+            {
+                return true;
+            }
+
+            else if(GetPlayerByIdentity(IdentityType.Farmer).Count() == 0)
+            {
+                return false;
+            }
+            else if (GetPlayerByIdentity(IdentityType.Hunter).Count() == 0 &&
+                GetPlayerByIdentity(IdentityType.Witcher).Count() == 0 &&
+                GetPlayerByIdentity(IdentityType.Propheter).Count() == 0)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

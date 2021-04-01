@@ -26,28 +26,25 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override async Task DoAction(GameCommand command)
         {
-            var prophet = command.GameInfo.GetPlayerByIdentity(IdentityType.Propheter).FirstOrDefault();
             
-            if(prophet.PlayerId != command.GameInput.Sender.Id)
+            if(!CheckIdentity(command))
             {
                 await command.GameInput.ReplyTemp("只有预言家才可以操作!");
                 return;
             }
             var commandItem = command.GetCommandIndex(0);
-            try
+
+            if (commandItem.Command.Equals("check"))
             {
-                if (!commandItem.Command.Equals("check")) throw new Exception();
                 int index = Convert.ToInt32(commandItem.Contents.First());
-                IPlayer player = command.GameInfo.CanKilledList[index];
-                await command.GameInput.ReplyTemp("这个人的身份是 : {0}".Format(player.Identity));
-                command.GameState = GameState.WitchStep;
-                command.IsRunNextState = true;
+                IPlayer player = command.GameInfo.GetPlayer(index);
+                await command.GameInput.ReplyTemp("这个人的身份是 : {0}".Format(player.Identity == IdentityType.Wolfer ? "狼" : "好"));
+                Next(command);
             }
-            catch (Exception)
+            else
             {
                 await command.GameInput.ReplyTemp("命令错误!");
             }
-            
         }
 
         public override string GetInitMessage(GameCommand command)
@@ -55,6 +52,11 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             var list = command.GameInfo.BuildCanKillList();
             string content = "请输入要查看的玩家的身份序号(-check {序号}) : \n" + list.ToIndexMessage();
             return content;
+        }
+
+        public override bool IsEmpty(GameCommand command)
+        {
+            return false;
         }
     }
 }

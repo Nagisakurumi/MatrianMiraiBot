@@ -24,7 +24,11 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override async Task DoAction(GameCommand command)
         {
-            var hunter = command.GameInfo.GetPlayerByIdentity(IdentityType.Hunter).FirstOrDefault();
+            if (!CheckIdentity(command))
+            {
+                await command.GameInput.ReplyTemp("只有猎人才可以操作!");
+                return;
+            }
 
             var commandItem = command.GetCommandIndex(0);
             if (commandItem.Command.Equals("gun"))

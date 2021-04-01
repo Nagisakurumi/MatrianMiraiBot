@@ -23,7 +23,11 @@ namespace MatrianMiraiBot.Coms.Games.Steps
         /// <param name="command"></param>
         public override async Task DoAction(GameCommand command)
         {
-            
+            command.GameInfo.GetAllKilledPlayer().ForEach(p => p.IsAlive = false);
+            command.GameInfo.InitKilleds();
+            command.GameInfo.Date++;
+
+            Next(command);
         }
 
         public override string GetInitMessage(GameCommand command)

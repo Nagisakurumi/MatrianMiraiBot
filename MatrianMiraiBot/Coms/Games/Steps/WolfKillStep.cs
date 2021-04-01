@@ -33,45 +33,47 @@ namespace MatrianMiraiBot.Coms.Games.Steps
                 await command.GameInput.ReplyTemp("命令错误!");
                 return;
             }
-
-            try
+            
+            IPlayer self = command.GameInfo.GetPlayerById(command.GameInput.Sender.Id);
+            if(!CheckIdentity(command))
             {
-                IPlayer self = command.GameInfo.GetPlayerById(command.GameInput.Sender.Id);
-                if(self.Identity != IdentityType.Wolfer)
-                {
-                    await command.GameInput.ReplyTemp("只有狼人才能操作!");
-                    return;
-                }
-                int index = Convert.ToInt32(commandItem.Contents.FirstOrDefault());
-                IPlayer player = command.GameInfo.CanKilledList[index];
-                (self as Wolfer).KillTargetPlayer = player;
-            }
-            catch (Exception)
-            {
-                await command.GameInput.ReplyTemp("命令错误!");
+                await command.GameInput.ReplyTemp("只有狼人才能操作!");
                 return;
             }
-
-            var list = new List<IPlayer>();
-            wolfers.ForEach(p => {
-                if ((p as Wolfer).KillTargetPlayer != null)
-                    list.Add((p as Wolfer).KillTargetPlayer);
-            }); 
-            ///如果狼人操作完成
-            if (list.Count() == wolfers.Count)
+            if (commandItem.Command.Equals("kill"))
             {
-                command.GameState = GameState.ProphetStep;
+                int index = Convert.ToInt32(commandItem.Contents.FirstOrDefault());
+                IPlayer player = command.GameInfo.GetPlayer(index);
+                (self as Wolfer).KillTargetPlayer = player;
+            }
+            else if (commandItem.Command.Equals("next"))
+            {
+                var list = new List<IPlayer>();
+                wolfers.ForEach(p =>
+                {
+                    if ((p as Wolfer).KillTargetPlayer != null)
+                        list.Add((p as Wolfer).KillTargetPlayer);
+                });
+                ///如果狼人操作完成
                 command.GameInfo.WolferWillKilled = (from item in list group item by item into gro orderby gro.Count() descending select gro.Key).FirstOrDefault();
                 wolfers.ForEach(p => (p as Wolfer).Reset());
-                command.IsRunNextState = true;
+                Next(command);
             }
-            
+            else
+            {
+                await command.GameInput.ReplyTemp("命令错误!");
+            }
         }
 
         public override string GetInitMessage(GameCommand command)
         {
             var killlist = command.GameInfo.BuildCanKillList();
-            return "进入狼人杀人阶段, 狼人请把要杀害的玩家信息通过临时会话发送给我! (-kill {序号}) : \n请输入序号选择要杀害的玩家:\n" + killlist.ToIndexMessage();
+            return "进入狼人杀人阶段 输入(-next 进入下一个阶段), 狼人请把要杀害的玩家信息通过临时会话发送给我! (-kill {序号}) : \n请输入序号选择要杀害的玩家:\n" + killlist.ToIndexMessage();
+        }
+
+        public override bool IsEmpty(GameCommand command)
+        {
+            return false;
         }
     }
 }

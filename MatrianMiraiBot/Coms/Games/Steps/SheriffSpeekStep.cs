@@ -6,36 +6,31 @@ using System.Threading.Tasks;
 
 namespace MatrianMiraiBot.Coms.Games.Steps
 {
-    public class WhiteStep : IStep
+    public class SheriffSpeekStep : IStep
     {
 
-
-        public WhiteStep()
+        public SheriffSpeekStep()
         {
             IsToGroup = true;
             IdentityType = IdentityType.None;
-            NextState = GameState.TalkAboutStep;
-            SelfState = GameState.WhiteStep;
-            StepMessage = "天亮了!";
+            NextState = GameState.SheriffVotedStep;
+            SelfState = GameState.SheriffSpeekStep;
+            StepMessage = "进入竞选警长阶段!";
         }
+
 
         public override async Task DoAction(GameCommand command)
         {
-            //第一天
-            if(command.GameInfo.Date == 1)
+            var commandItem = command.GetCommandIndex(0);
+            if (commandItem.Command.Equals("-next"))
             {
-                command.GameState = GameState.SheriffSpeekStep;
+                Next(command);
             }
-            else
-            {
-                command.GameState = GameState.TalkAboutStep;
-            }
-            command.IsRunNextState = true;
         }
 
         public override string GetInitMessage(GameCommand command)
         {
-            return null;
+            return "输入命令 (-next) 进入下一个阶段!";
         }
 
         public override bool IsEmpty(GameCommand command)
