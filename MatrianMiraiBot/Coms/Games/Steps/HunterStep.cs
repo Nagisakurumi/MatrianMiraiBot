@@ -1,4 +1,5 @@
 ﻿using MatrianMiraiBot.Coms.Games.Enums;
+using MatrianMiraiBot.Expends;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,14 +22,32 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             StepMessage = "进入猎人阶段!";
         }
 
-        public override Task DoAction(GameCommand command)
+        public override async Task DoAction(GameCommand command)
         {
-            throw new NotImplementedException();
+            var hunter = command.GameInfo.GetPlayerByIdentity(IdentityType.Hunter).FirstOrDefault();
+
+            var commandItem = command.GetCommandIndex(0);
+            if (commandItem.Command.Equals("gun"))
+            {
+                int index = Convert.ToInt32(commandItem.Contents.FirstOrDefault());
+                var player = command.GameInfo.CanKilledList[index];
+                command.GameInfo.GunKilled = player;
+                command.IsRunNextState = true;
+                command.GameState = NextState;
+            }
+            else
+            {
+                await command.GameInput.ReplyTemp("命令错误!");
+            }
         }
 
         public override string GetInitMessage(GameCommand command)
         {
-            
+            if (!IsEmpty(command))
+            {
+                return "您已经被杀害，是否使用技能。请选择目标(-gun {序号}) : \n" + command.GameInfo.BuildCanKillList().ToIndexMessage();
+            }
+            return null;
         }
         /// <summary>
         /// 是否需要空过

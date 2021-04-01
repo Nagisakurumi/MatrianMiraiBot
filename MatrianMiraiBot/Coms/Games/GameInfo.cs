@@ -48,6 +48,10 @@ namespace MatrianMiraiBot.Coms.Games
         /// </summary>
         public IPlayer PoisonKilled { get; set; }
         /// <summary>
+        /// 被枪杀
+        /// </summary>
+        public IPlayer GunKilled { get; set; }
+        /// <summary>
         /// 添加基础玩家信息
         /// </summary>
         /// <param name="baseInfo"></param>
