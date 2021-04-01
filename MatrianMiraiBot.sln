@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30428.66
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatrianMiraiBot", "MatrianMiraiBot\MatrianMiraiBot.csproj", "{A8BCD76E-EC4E-4D04-935F-95F8398DAC8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8BCD76E-EC4E-4D04-935F-95F8398DAC8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8BCD76E-EC4E-4D04-935F-95F8398DAC8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8BCD76E-EC4E-4D04-935F-95F8398DAC8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8BCD76E-EC4E-4D04-935F-95F8398DAC8B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0BDAB113-AD15-4530-A489-2A8A702B4411}
+	EndGlobalSection
+EndGlobal
