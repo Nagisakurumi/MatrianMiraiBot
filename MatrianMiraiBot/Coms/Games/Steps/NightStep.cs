@@ -30,5 +30,10 @@ namespace MatrianMiraiBot.Coms.Games.Steps
         {
             return null;
         }
+
+        public override bool IsEmpty(GameCommand command)
+        {
+            return false;
+        }
     }
 }

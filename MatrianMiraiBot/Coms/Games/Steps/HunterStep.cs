@@ -17,7 +17,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
         {
             IsToGroup = false;
             IdentityType = IdentityType.Hunter;
-            NextState = GameState.WitchStep;
+            NextState = GameState.WhiteStep;
             SelfState = GameState.HunterStep;
             StepMessage = "进入猎人阶段!";
         }

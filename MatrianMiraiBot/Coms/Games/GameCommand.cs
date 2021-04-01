@@ -92,5 +92,13 @@ namespace MatrianMiraiBot.Coms.Games
             this.GameState = state;
             this.IsRunNextState = true;
         }
+
+        /// <summary>
+        /// 初始化击杀
+        /// </summary>
+        public void InitKilleds()
+        {
+            
+        }
     }
 }
