@@ -13,7 +13,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
     {
         public WolfKillStep()
         {
-            IsToGroup = false;
+            IsToGroup = true;
             IdentityType = IdentityType.Wolfer;
             NextState = GameState.ProphetStep;
             SelfState = GameState.WolfKillStep;
@@ -28,11 +28,6 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             var wolfers = command.GameInfo.GetWolfers(true);
            
             var commandItem = command.GetCommandIndex(0);
-            if (commandItem == null || !commandItem.Command.Equals("kill"))
-            {
-                await command.GameInput.ReplyTemp("命令错误!");
-                return;
-            }
             
             IPlayer self = command.GameInfo.GetPlayerById(command.GameInput.Sender.Id);
             if(!CheckIdentity(command))

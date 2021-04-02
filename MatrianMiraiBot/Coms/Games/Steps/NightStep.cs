@@ -23,16 +23,20 @@ namespace MatrianMiraiBot.Coms.Games.Steps
         /// <param name="command"></param>
         public override async Task DoAction(GameCommand command)
         {
-            command.GameInfo.GetAllKilledPlayer().ForEach(p => p.IsAlive = false);
-            command.GameInfo.InitKilleds();
-            command.GameInfo.Date++;
+            var commandItem = command.GetCommandIndex(0);
+            if (commandItem.Command.Equals("next"))
+            {
+                command.GameInfo.GetAllKilledPlayer().ForEach(p => p.IsAlive = false);
+                command.GameInfo.InitKilleds();
+                command.GameInfo.Date++;
 
-            Next(command);
+                Next(command);
+            }
         }
 
         public override string GetInitMessage(GameCommand command)
         {
-            return null;
+            return "输入 (-next) 进入下一步";
         }
 
         public override bool IsEmpty(GameCommand command)

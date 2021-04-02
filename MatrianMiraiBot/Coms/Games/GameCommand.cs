@@ -51,11 +51,11 @@ namespace MatrianMiraiBot.Coms.Games
             List<string> cs = command.Split('-').ToList();
             if (cs.Count == 0) throw new Exception("命令错误!");
 
-            if (cs[0].Equals("")) cs.RemoveAt(0);
+            if (cs[0].Equals("") || cs[0].Equals(" ")) cs.RemoveAt(0);
 
             foreach (var item in cs)
             {
-                if (item.Equals("")) continue;
+                if (item.Equals("") || item.Equals(" ")) continue;
                 Commands.Add(new CommandItem(item));
             }
 
@@ -78,7 +78,7 @@ namespace MatrianMiraiBot.Coms.Games
         /// <returns></returns>
         public async Task WaitRandomTime()
         {
-            await Task.Delay(Random.Next(2, 7));
+            await Task.Delay(Random.Next(2, 7) * 1000);
         }
 
         /// <summary>

@@ -1,10 +1,12 @@
 ﻿using MatrianMiraiBot.Coms.Games.Enums;
 using MatrianMiraiBot.Coms.Games.Players;
+using MatrianMiraiBot.Expends;
 using Mirai_CSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MatrianMiraiBot.Coms.Games
 {
@@ -32,7 +34,7 @@ namespace MatrianMiraiBot.Coms.Games
         /// <summary>
         /// 最大玩家数量
         /// </summary>
-        public static int MaxPlayerCount = 9;
+        public static int MaxPlayerCount = 1;
         /// <summary>
         /// 是否满足玩家
         /// </summary>
@@ -80,13 +82,11 @@ namespace MatrianMiraiBot.Coms.Games
         /// 初始化身份
         /// </summary>
         /// <returns></returns>
-        public bool InitIdentity()
+        public async Task<bool> InitIdentity(GameInput gameInput)
         {
             if (!IsFullPlayer) return false;
             Players.Clear();
-            List<IdentityType> values = new List<IdentityType>();
-            values.AddRange(Identities);
-
+            List<IdentityType> values = Identities.ShuffleCopy(Random);
             int playerIndex = 0;
             for (int i = MaxPlayerCount - 1; i >= 0 ; i--)
             {
@@ -95,6 +95,11 @@ namespace MatrianMiraiBot.Coms.Games
                 Players.Add(player);
                 player.Init(BaseInfos[playerIndex++]);
                 values.RemoveAt(index);
+            }
+
+            foreach (var item in Players)
+            {
+                await gameInput.SendTemp("您的身份是 : {0}".Format(item.Identity), item.PlayerId);
             }
 
             return true;

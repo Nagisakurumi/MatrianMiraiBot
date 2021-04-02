@@ -13,7 +13,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public AddPlayerStep()
         {
-            IsToGroup = false;
+            IsToGroup = true;
             IdentityType = IdentityType.None;
             NextState = GameState.Night;
             SelfState = GameState.AddPlayer;
@@ -30,18 +30,27 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             var commandItem = command.GetCommandIndex(0);
             if (commandItem.Command.Equals("next"))
             {
-                command.GameInfo.InitIdentity();
+                await command.GameInfo.InitIdentity(command.GameInput);
                 Next(command);
                 return;
             }
             var player = command.GameInfo.BaseInfos.Where(p => p.Id == command.GameInput.Sender.Id).FirstOrDefault();
             if (player == null)
             {
-                command.GameInfo.AddBaseInfo(new GamePlayerBaseInfo() { Id = command.GameInput.Sender.Id, Name = command.GameInput.Sender.Name } );
+                GamePlayerBaseInfo baseInfo = new GamePlayerBaseInfo() { Id = command.GameInput.Sender.Id, Name = command.GameInput.Sender.Name };
+                command.GameInfo.AddBaseInfo(baseInfo);
+                await command.GameInput.ReplyGroup("玩家{0},成功参与游戏,请耐心等待其他玩家的加入!".Format(baseInfo.Name));
             }
             else
             {
                 await command.GameInput.ReplyGroup("不能重复参加!");
+            }
+            //进入下一个环节
+            if(command.GameInfo.BaseInfos.Count == GameInfo.MaxPlayerCount)
+            {
+                await command.GameInfo.InitIdentity(command.GameInput);
+                Next(command);
+                return;
             }
         }
 

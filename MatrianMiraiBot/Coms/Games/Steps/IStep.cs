@@ -66,7 +66,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
                 }
             }
 
-            if (players.Count() == 0 || IsEmpty(command))
+            if ((IdentityType != IdentityType.None && players.Count() == 0) || IsEmpty(command))
             {
                 await command.Empty(NextState);
             }

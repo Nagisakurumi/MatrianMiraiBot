@@ -24,12 +24,12 @@ namespace MatrianMiraiBot.Coms.Games
         /// <summary>
         /// 发送者
         /// </summary>
-        public GroupMemberInfo Sender { get; private set; }
+        public IGroupMemberInfo Sender { get; private set; }
 
         /// <summary>
         /// 组信息
         /// </summary>
-        public GroupInfo GroupInfo { get; private set; }
+        public IGroupInfo GroupInfo { get; private set; }
         /// <summary>
         /// 构造函数
         /// </summary>
@@ -37,7 +37,7 @@ namespace MatrianMiraiBot.Coms.Games
         /// <param name="command"></param>
         /// <param name="info"></param>
         /// <param name="groupInfo"></param>
-        public GameInput(MiraiHttpSession mirai, string command, GroupMemberInfo info, GroupInfo groupInfo)
+        public GameInput(MiraiHttpSession mirai, string command, IGroupMemberInfo info, IGroupInfo groupInfo)
         {
             this.Mirai = mirai;
             this.Command = command;

@@ -11,7 +11,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public ClosedStep()
         {
-            IsToGroup = false;
+            IsToGroup = true;
             IdentityType = IdentityType.None;
             NextState = GameState.AddPlayer;
             SelfState = GameState.Closed;

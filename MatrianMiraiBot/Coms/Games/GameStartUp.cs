@@ -24,7 +24,7 @@ namespace MatrianMiraiBot.Coms.Games
         /// <summary>
         /// 群信息
         /// </summary>
-        public GroupInfo GroupInfo { get; set; }
+        public IGroupInfo GroupInfo { get; set; }
         /// <summary>
         /// 玩家
         /// </summary>
@@ -43,7 +43,7 @@ namespace MatrianMiraiBot.Coms.Games
         /// 构造函数
         /// </summary>
         /// <param name="groupInfo"></param>
-        public GameStartUp(GroupInfo groupInfo)
+        public GameStartUp(IGroupInfo groupInfo)
         {
             GroupInfo = groupInfo;
         }
@@ -54,6 +54,8 @@ namespace MatrianMiraiBot.Coms.Games
         /// <param name="gameInput"></param>
         public async Task DealCommand(GameInput gameInput)
         {
+            if (gameInput.GroupInfo.Id != this.GroupInfo.Id) return;
+
             if (!gameInput.Command.StartsWith(CommandStart)) return;
             GameCommand gameCommand = null;
             try
@@ -88,10 +90,10 @@ namespace MatrianMiraiBot.Coms.Games
             else
             {
                 await step.DoAction(gameCommand);
-                if (gameCommand.IsRunNextState)
-                {
-                    await Step(gameCommand);
-                }
+            }
+            if (gameCommand.IsRunNextState)
+            {
+                await Step(gameCommand);
             }
         }
 

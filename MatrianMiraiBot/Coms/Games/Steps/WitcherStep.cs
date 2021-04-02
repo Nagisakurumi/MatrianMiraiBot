@@ -72,18 +72,21 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             var witcher = player as Witcher;
             string content = "";
             var killed = command.GameInfo.WolferWillKilled;
-            if(killed != null)
+            if (witcher != null)
             {
-                content += "今天晚上被杀害的玩家是{0},".Format(killed.PlayerNickName);
-                if(witcher.Antidote > 0)
+                if (killed != null)
                 {
-                    content += "是否使用解药 (-save {序号}),";
+                    content += "今天晚上被杀害的玩家是{0},".Format(killed.PlayerNickName);
+                    if (witcher.Antidote > 0)
+                    {
+                        content += "是否使用解药 (-save {序号}),";
+                    }
                 }
-            }
-            if (witcher.Poison > 0)
-            {
-                var list = command.GameInfo.BuildCanKillList();
-                content += "是否使用毒药 (-poison {序号})\n" + list.ToIndexMessage();
+                if (witcher.Poison > 0)
+                {
+                    var list = command.GameInfo.BuildCanKillList();
+                    content += "是否使用毒药 (-poison {序号})\n" + list.ToIndexMessage();
+                }
             }
             content += "\n 使用命令 (-empty) 表示空过不操作!";
             return content;
