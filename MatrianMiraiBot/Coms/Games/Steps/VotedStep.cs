@@ -33,7 +33,13 @@ namespace MatrianMiraiBot.Coms.Games.Steps
                     target.Key.IsAlive = false;
                 }
 
-
+                bool? isOver = !command.GameInfo.IsGameOver();
+                if (isOver != null)
+                {
+                    command.GameState = GameState.Over;
+                    command.IsRunNextState = true;
+                    return;
+                }
 
                 if (command.GameInfo.GetAllKilledPlayer().Where(p => p.IsSheriff).Count() > 0)
                 {

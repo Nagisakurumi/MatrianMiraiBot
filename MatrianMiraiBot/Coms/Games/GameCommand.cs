@@ -33,7 +33,7 @@ namespace MatrianMiraiBot.Coms.Games
         /// <summary>
         /// 游戏当前状态
         /// </summary>
-        public GameState GameState { get; set; }
+        public GameState GameState { get => GameInfo.GameState; set => GameInfo.GameState = value; }
         /// <summary>
         /// 是否需要运行一下下一个阶段
         /// </summary>
@@ -91,14 +91,6 @@ namespace MatrianMiraiBot.Coms.Games
             await WaitRandomTime();
             this.GameState = state;
             this.IsRunNextState = true;
-        }
-
-        /// <summary>
-        /// 初始化击杀
-        /// </summary>
-        public void InitKilleds()
-        {
-            
         }
     }
 }

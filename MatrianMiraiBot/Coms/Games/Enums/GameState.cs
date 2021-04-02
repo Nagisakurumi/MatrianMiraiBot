@@ -64,5 +64,9 @@ namespace MatrianMiraiBot.Coms.Games.Enums
         /// 移交警徽
         /// </summary>
         SheriffMoveStep,
+        /// <summary>
+        /// 游戏结束
+        /// </summary>
+        Over,
     }
 }

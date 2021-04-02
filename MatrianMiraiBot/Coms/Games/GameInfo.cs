@@ -18,6 +18,13 @@ namespace MatrianMiraiBot.Coms.Games
         /// </summary>
         public List<IPlayer> Players { get; set; } = new List<IPlayer>();
         /// <summary>
+        /// 身份集合
+        /// </summary>
+        public static List<IdentityType> Identities { get; set; } = new List<IdentityType>() {
+             IdentityType.Farmer,IdentityType.Farmer,IdentityType.Farmer, IdentityType.Hunter, IdentityType.Propheter, IdentityType.Witcher, IdentityType.Wolfer
+            , IdentityType.Wolfer, IdentityType.Wolfer
+        };
+        /// <summary>
         /// 基础玩家信息
         /// </summary>
         public List<GamePlayerBaseInfo> BaseInfos { get; set; } = new List<GamePlayerBaseInfo>();
@@ -25,7 +32,7 @@ namespace MatrianMiraiBot.Coms.Games
         /// <summary>
         /// 最大玩家数量
         /// </summary>
-        public static int MaxPlayerCount = 8;
+        public static int MaxPlayerCount = 9;
         /// <summary>
         /// 是否满足玩家
         /// </summary>
@@ -52,6 +59,10 @@ namespace MatrianMiraiBot.Coms.Games
         /// </summary>
         public IPlayer GunKilled { get; set; }
         /// <summary>
+        /// 游戏状态
+        /// </summary>
+        public GameState GameState { get; set; } = GameState.Closed;
+        /// <summary>
         /// 日期
         /// </summary>
         public int Date { get; set; }
@@ -72,12 +83,10 @@ namespace MatrianMiraiBot.Coms.Games
         public bool InitIdentity()
         {
             if (!IsFullPlayer) return false;
-
+            Players.Clear();
             List<IdentityType> values = new List<IdentityType>();
-            foreach (IdentityType item in Enum.GetValues(typeof(IdentityType)))
-            {
-                values.Add(item);
-            }
+            values.AddRange(Identities);
+
             int playerIndex = 0;
             for (int i = MaxPlayerCount - 1; i >= 0 ; i--)
             {
@@ -85,6 +94,7 @@ namespace MatrianMiraiBot.Coms.Games
                 IPlayer player = IPlayer.Factory(values[index]);
                 Players.Add(player);
                 player.Init(BaseInfos[playerIndex++]);
+                values.RemoveAt(index);
             }
 
             return true;
