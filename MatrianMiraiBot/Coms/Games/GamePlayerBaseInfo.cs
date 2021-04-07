@@ -12,5 +12,12 @@ namespace MatrianMiraiBot.Coms.Games
 
         public string Name;
 
+        public GamePlayerBaseInfo() { }
+
+        public GamePlayerBaseInfo(long id, string name) { Id = id; Name = name; }
+
+
+
+
     }
 }

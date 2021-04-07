@@ -12,7 +12,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
     {
         public SheriffVotedStep()
         {
-            IsToGroup = false;
+            IsToGroup = true;
             IdentityType = IdentityType.None;
             NextState = GameState.TalkAboutStep;
             SelfState = GameState.SheriffVotedStep;
@@ -51,6 +51,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
                     return;
                 }
                 self.VotedPlayer = player;
+                await command.GameInput.ReplyGroup("玩家 : {0} -> {1}".Format(self.PlayerNickName, player == null ? "" : player.PlayerNickName));
             }
         }
 

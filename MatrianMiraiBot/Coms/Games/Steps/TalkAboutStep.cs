@@ -35,9 +35,9 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             var players = "";
             deaths.Clear();
             deaths.AddRange(command.GameInfo.GetAllKilledPlayer());
-            players = string.Join(",", deaths);
+            players = deaths.JoinToString(",", p => p.PlayerNickName);
             return "昨晚死亡的玩家有 : {0}\n".Format(players) +
-                "开始尽情讨论， 输入(-next) 进入下一个阶段!";
+                "开始尽情讨论， 输入(-next) 进入下一个阶段!\n";
         }
 
         public override bool IsEmpty(GameCommand command)

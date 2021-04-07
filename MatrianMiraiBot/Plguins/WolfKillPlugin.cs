@@ -33,19 +33,25 @@ namespace MatrianMiraiBot.Plguins
                 {
                     //await session.SendGroupMessageAsync(e.Sender.Group.Id, item);
                     string message = item.ToString();
+                    GameInput gameInput = new GameInput(session, message, e.Sender, e.Sender.Group);
                     if (message.Equals("-game -create"))
                     {
                         if (game == null)
                         {
                             game = new GameStartUp(e.Sender.Group);
-                            await session.SendGroupMessageAsync(e.Sender.Group.Id, "群{0}成功创建狼人杀游戏!".Format(e.Sender.Group.Name).ToMessage());
+                            await gameInput.ReplyGroup("群{0}成功创建狼人杀游戏!".Format(e.Sender.Group.Name));
                         }
                         else
-                            await session.SendGroupMessageAsync(e.Sender.Group.Id, "该群已经开始游戏了!".ToMessage());
+                            await gameInput.ReplyGroup("该群已经开始游戏了!");
+                    }
+                    else if (message.Equals("-game -destory"))
+                    {
+                        game = null;
+                        await gameInput.ReplyGroup("游戏被关闭!");
                     }
                     else if (game != null && message.StartsWith(game.CommandStart))
                     {
-                        await game.DealCommand(new GameInput(session, message, e.Sender, e.Sender.Group));
+                        await game.DealCommand(gameInput);
                     }
                 }
             }

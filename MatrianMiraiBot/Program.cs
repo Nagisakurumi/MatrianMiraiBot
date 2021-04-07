@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MatrianMiraiBot.Mock;
 using MatrianMiraiBot.Plguins;
 using Mirai_CSharp;
 using Mirai_CSharp.Models;
@@ -12,6 +13,10 @@ namespace MatrianMiraiBot
         {
             Task task = StartUp.Main();
             task.Wait();
+
+            //MockStartUp mockStart = new MockStartUp();
+            //Task task = mockStart.MockStart();
+            //task.Wait();
         }
     }
 }

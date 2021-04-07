@@ -35,7 +35,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override string GetInitMessage(GameCommand command)
         {
-            return null;
+            return "输入(-next) 进入下一步!";
         }
 
         public override bool IsEmpty(GameCommand command)

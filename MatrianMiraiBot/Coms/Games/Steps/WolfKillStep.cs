@@ -39,9 +39,11 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             {
                 int index = Convert.ToInt32(commandItem.Contents.FirstOrDefault());
                 IPlayer player = command.GameInfo.GetPlayer(index);
-                (self as Wolfer).KillTargetPlayer = player;
+                (self as Wolfer).SetTarget(player);
+                if(player != null)
+                    await command.GameInput.ReplyTemp("您投票 -> {0} 玩家成功!".Format(player.PlayerNickName));
             }
-            else if (commandItem.Command.Equals("next"))
+            if (commandItem.Command.Equals("next") || wolfers.Where(p => (p as Wolfer).IsOptioned == false).Count() == 0)
             {
                 var list = new List<IPlayer>();
                 wolfers.ForEach(p =>
@@ -53,10 +55,6 @@ namespace MatrianMiraiBot.Coms.Games.Steps
                 command.GameInfo.WolferWillKilled = (from item in list group item by item into gro orderby gro.Count() descending select gro.Key).FirstOrDefault();
                 wolfers.ForEach(p => (p as Wolfer).Reset());
                 Next(command);
-            }
-            else
-            {
-                await command.GameInput.ReplyTemp("命令错误!");
             }
         }
 

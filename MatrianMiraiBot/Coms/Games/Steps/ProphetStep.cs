@@ -56,7 +56,8 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override bool IsEmpty(GameCommand command)
         {
-            return false;
+            var prophet = command.GameInfo.GetPlayerByIdentity(IdentityType.Propheter).FirstOrDefault();
+            return prophet == null;
         }
     }
 }

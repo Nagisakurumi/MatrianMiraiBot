@@ -28,8 +28,9 @@ namespace MatrianMiraiBot.Coms.Games
             {
                 if (cs[0].Equals("")) throw new Exception("命令格式错误");
                 this.Command = cs[0];
-                foreach (var item in cs)
+                for (int i = 1; i < cs.Length; i++)
                 {
+                    var item = cs[i];
                     if (!item.Equals(""))
                         Contents.Add(item);
                 }

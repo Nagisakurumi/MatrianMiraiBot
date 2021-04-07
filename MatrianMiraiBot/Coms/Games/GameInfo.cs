@@ -34,7 +34,7 @@ namespace MatrianMiraiBot.Coms.Games
         /// <summary>
         /// 最大玩家数量
         /// </summary>
-        public static int MaxPlayerCount = 1;
+        public static int MaxPlayerCount = 9;
         /// <summary>
         /// 是否满足玩家
         /// </summary>
@@ -263,7 +263,7 @@ namespace MatrianMiraiBot.Coms.Games
             {
                 return false;
             }
-            return true;
+            return null;
         }
     }
 }

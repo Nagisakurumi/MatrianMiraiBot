@@ -51,7 +51,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             {
                 return "您已经被杀害，是否使用技能。请选择目标(-gun {序号}) : \n" + command.GameInfo.BuildCanKillList().ToIndexMessage();
             }
-            return null;
+            return "今晚和你没关系!";
         }
         /// <summary>
         /// 是否需要空过

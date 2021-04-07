@@ -15,14 +15,14 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             IdentityType = IdentityType.None;
             NextState = GameState.SheriffVotedStep;
             SelfState = GameState.SheriffSpeekStep;
-            StepMessage = "进入竞选警长阶段!";
+            StepMessage = "进入竞选警长演讲阶段!";
         }
 
 
         public override async Task DoAction(GameCommand command)
         {
             var commandItem = command.GetCommandIndex(0);
-            if (commandItem.Command.Equals("-next"))
+            if (commandItem.Command.Equals("next"))
             {
                 Next(command);
             }

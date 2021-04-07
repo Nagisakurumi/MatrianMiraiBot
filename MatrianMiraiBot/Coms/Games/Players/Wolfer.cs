@@ -13,8 +13,10 @@ namespace MatrianMiraiBot.Coms.Games.Players
         /// 期望杀害的玩家
         /// </summary>
         public IPlayer KillTargetPlayer { get; set; }
-
-
+        /// <summary>
+        /// 是否操作过
+        /// </summary>
+        public bool IsOptioned { get; set; } = false;
         /// <summary>
         /// 执行
         /// </summary>
@@ -37,6 +39,16 @@ namespace MatrianMiraiBot.Coms.Games.Players
         public void Reset()
         {
             KillTargetPlayer = null;
+            IsOptioned = false;
+        }
+        /// <summary>
+        /// 设置目标
+        /// </summary>
+        /// <param name="player"></param>
+        public void SetTarget(IPlayer player)
+        {
+            KillTargetPlayer = player;
+            IsOptioned = true;
         }
     }
 }

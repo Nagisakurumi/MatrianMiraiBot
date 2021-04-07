@@ -1,5 +1,6 @@
 ﻿using MatrianMiraiBot.Coms.Games.Enums;
 using MatrianMiraiBot.Coms.Games.Players;
+using MatrianMiraiBot.Expends;
 using Mirai_CSharp.Models;
 using System;
 using System.Collections.Generic;
@@ -90,6 +91,11 @@ namespace MatrianMiraiBot.Coms.Games
                     break;
             }
             return null;
+        }
+
+        public new string ToString()
+        {
+            return "玩家 : {0}".Format(PlayerNickName);
         }
     }
 }
