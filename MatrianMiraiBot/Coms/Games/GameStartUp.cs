@@ -28,7 +28,7 @@ namespace MatrianMiraiBot.Coms.Games
         /// 构造函数
         /// </summary>
         /// <param name="groupInfo"></param>
-        public GameStartUp(IGroupInfo groupInfo) : base(groupInfo)
+        public GameStartUp(GameCommand gameCommand, IGroupInfo groupInfo) : base(gameCommand, groupInfo)
         {
             GameInfo = new GameInfo();
             Steps = new Dictionary<IGameState, IGameStep>() {
@@ -39,6 +39,8 @@ namespace MatrianMiraiBot.Coms.Games
 
             };
             CommandStart = GameStartCommand;
+            CmmandDestory = GameDestoryCommand;
+            Name = "狼人杀";
         }
 
         public override void Dispose()

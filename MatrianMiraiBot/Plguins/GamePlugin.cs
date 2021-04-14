@@ -19,11 +19,10 @@ namespace MatrianMiraiBot.Plguins
     public class GamePlugin : IGroupMessage, ITempMessage
     {
 
-        public GameStartUp game;
         /// <summary>
-        /// 游戏列表
+        /// 游戏选择器
         /// </summary>
-        public List<IGame> Games { get; set; } = new List<IGame>();
+        public GameSelector GameSelector { get; set; } = new GameSelector();
         /// <summary>
         /// 接受群消息接口
         /// </summary>
@@ -38,69 +37,14 @@ namespace MatrianMiraiBot.Plguins
                 if(item.Type.Equals("Plain"))
                 {
                     string message = item.ToString();
-                    if (message.StartsWith("-game"))
+                    GameInput gameInput = new GameInput(session, message, e.Sender, e.Sender.Group);
+                    try
                     {
-                        GameInput gameInput = new GameInput(session, message, e.Sender, e.Sender.Group);
-                        if (message.Equals("-game -create"))
-                        {
-                            if (game == null)
-                            {
-                                game = new GameStartUp(e.Sender.Group);
-                                await gameInput.ReplyGroup("群{0}成功创建狼人杀游戏!".Format(e.Sender.Group.Name));
-                            }
-                            else
-                                await gameInput.ReplyGroup("该群已经开始游戏了!");
-                        }
-                        else if (message.Equals(GameStartUp.GameDestoryCommand))
-                        {
-                            game.Dispose();
-                            game = null;
-                            await gameInput.ReplyGroup("游戏被关闭!");
-                        }
-                        else if (game != null && message.StartsWith(GameStartUp.GameStartCommand))
-                        {
-                            await game.DealCommand(gameInput);
-                        }
+                        await GameSelector.DealCommand(gameInput);
                     }
-                    else if (message.StartsWith(FiveGame.GameStartCommand))
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            GameInput gameInput = new GameInput(session, message, e.Sender, e.Sender.Group);
-                            if (message.StartsWith("-five -create"))
-                            {
-                                var five = Games.Where(p => p.GroupInfo.Id == e.Sender.Id).FirstOrDefault();
-                                if (five != null)
-                                {
-                                    await gameInput.ReplyGroup("不能重复创建!");
-                                }
-                                else
-                                {
-                                    message = gameInput.Command.Substring(FiveGame.GameStartCommand.Length);
-                                    CommandItem command = GameCommand.ConvertToCommands(message).First();
-                                    int row = Convert.ToInt32(command.Contents[0]);
-                                    int col = Convert.ToInt32(command.Contents[1]);
-                                    Games.Add(new FiveGame(row, col, e.Sender.Group));
-                                    await gameInput.ReplyGroup("创建五子棋成功!");
-                                }
-                            }
-                            else if (message.Equals(FiveGame.GameDestoryCommand))
-                            {
-                                var five = Games.Where(p => p.GroupInfo.Id == gameInput.GroupInfo.Id).FirstOrDefault();
-                                five.Dispose();
-                                Games.Remove(five);
-                                await gameInput.ReplyGroup("游戏被关闭!");
-                            }
-                            else
-                            {
-                                var five = Games.Where(p => p.GroupInfo.Id == gameInput.GroupInfo.Id).FirstOrDefault();
-                                await five.DealCommand(gameInput);
-                            }
-                        }
-                        catch (Exception)
-                        {
-
-                        }
+                        await gameInput.ReplyGroup("命令错误!" + ex.Message);    
                     }
                 }
             }
@@ -114,9 +58,14 @@ namespace MatrianMiraiBot.Plguins
                 if (item.Type.Equals("Plain"))
                 {
                     string message = item.ToString();
-                    if (game != null && message.StartsWith(game.CommandStart))
+                    GameInput gameInput = new GameInput(session, message, e.Sender, e.Sender.Group);
+                    try
                     {
-                        await game.DealCommand(new GameInput(session, message, e.Sender, e.Sender.Group));
+                        await GameSelector.DealCommand(gameInput);
+                    }
+                    catch (Exception ex)
+                    {
+                        await gameInput.ReplyGroup("命令错误!" + ex.Message);
                     }
                 }
             }

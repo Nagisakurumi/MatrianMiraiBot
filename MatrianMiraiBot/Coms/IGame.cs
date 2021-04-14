@@ -15,6 +15,14 @@ namespace MatrianMiraiBot.Coms
         /// </summary>
         public string CommandStart { get; set; }
         /// <summary>
+        /// 销毁的命令
+        /// </summary>
+        public string CmmandDestory { get; set; }
+        /// <summary>
+        /// 游戏名称
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
         /// 群信息
         /// </summary>
         public IGroupInfo GroupInfo { get; set; }
@@ -30,7 +38,7 @@ namespace MatrianMiraiBot.Coms
         /// 构造函数
         /// </summary>
         /// <param name="groupInfo"></param>
-        public IGame(IGroupInfo groupInfo)
+        public IGame(GameCommand gameCommand, IGroupInfo groupInfo)
         {
             GroupInfo = groupInfo;
         }
@@ -47,8 +55,8 @@ namespace MatrianMiraiBot.Coms
             GameCommand gameCommand = null;
             try
             {
-                var command = gameInput.Command.Substring(CommandStart.Length);
-                gameCommand = new GameCommand(command, gameInput, GameInfo);
+                //var command = gameInput.Command.Substring(CommandStart.Length);
+                gameCommand = new GameCommand(gameInput.Command, gameInput, GameInfo);
 
                 await Step(gameCommand);
             }

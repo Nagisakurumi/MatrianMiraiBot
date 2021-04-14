@@ -49,7 +49,8 @@ namespace MatrianMiraiBot.Coms
             this.GameInfo = gameInfo;
 
             this.Commands.AddRange(ConvertToCommands(command));
-
+            if(this.Commands.Count > 0)
+                this.Commands.RemoveAt(0);
         }
         /// <summary>
         /// 转换为命令

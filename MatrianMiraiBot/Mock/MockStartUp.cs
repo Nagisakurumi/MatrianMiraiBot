@@ -18,6 +18,10 @@ namespace MatrianMiraiBot.Mock
         /// 插件
         /// </summary>
         public GamePlugin Plugin { get; set; } = new GamePlugin();
+        /// <summary>
+        /// 获取
+        /// </summary>
+        public GameStartUp Game => Plugin.GameSelector.RunningGames.Where(p => p is GameStartUp).FirstOrDefault() as GameStartUp;
 
         public WolfGameMock Session = new WolfGameMock();
 
@@ -131,8 +135,8 @@ namespace MatrianMiraiBot.Mock
 
         public async Task<bool> DoPlayer()
         {
-            GameState state = Plugin.game.GameInfo.GameState as GameState;
-            GameInfo gameInfo = Plugin.game.GameInfo as GameInfo;
+            GameState state = Game.GameInfo.GameState as GameState;
+            GameInfo gameInfo = Game.GameInfo as GameInfo;
             List<IPlayer> players = null;
             if(state == GameState.WolfKillStep)
             {

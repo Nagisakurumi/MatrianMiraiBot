@@ -21,8 +21,10 @@ namespace MatrianMiraiBot.Coms.FiveGames
         /// </summary>
         /// <param name="row"></param>
         /// <param name="col"></param>
-        public FiveGame(int row, int col, IGroupInfo groupInfo) : base(groupInfo)
+        public FiveGame(GameCommand gameCommand, IGroupInfo groupInfo) : base(gameCommand, groupInfo)
         {
+            int row = Convert.ToInt32(gameCommand.Commands[0].Contents[0]);
+            int col = Convert.ToInt32(gameCommand.Commands[0].Contents[1]);
             GameInfo = new GameInfo(row, col);
             Steps = new Dictionary<IGameState, IGameStep>()
             {
@@ -30,6 +32,8 @@ namespace MatrianMiraiBot.Coms.FiveGames
                 { FiveGameState.Over, new OverStep() }, { FiveGameState.Init, new InitStep() }
             };
             CommandStart = GameStartCommand;
+            CmmandDestory = GameDestoryCommand;
+            Name = "五子棋";
         }
 
         public override void Dispose()

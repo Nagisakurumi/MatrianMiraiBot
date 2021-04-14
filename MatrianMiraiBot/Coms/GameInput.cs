@@ -47,6 +47,12 @@ namespace MatrianMiraiBot.Coms
             this.GroupInfo = groupInfo;
             this.Sender = info;
         }
+
+        internal void ReplyGroup(Func<IFormatProvider, string, object, string> format)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// 回复组消息
         /// </summary>

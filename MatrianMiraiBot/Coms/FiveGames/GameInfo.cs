@@ -60,7 +60,7 @@ namespace MatrianMiraiBot.Coms.FiveGames
         {
             Row = row + 1;
             Col = col + 1;
-            Layout = new int[row, col];
+            Layout = new int[Row, Col];
             GameState = FiveGameState.Init;
             MaxPlayerCount = 2;
 
@@ -75,7 +75,7 @@ namespace MatrianMiraiBot.Coms.FiveGames
 
             for (int i = 1; i <= Row; i++)
             {
-                Draw.DrawString((i - 1).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(0, i * Pixel));
+                Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(0, i * Pixel));
 
                 int y = i * Pixel;
                 Draw.DrawLine(p, new Point(Pixel, y), new Point(LayoutMap.Width, y));
@@ -84,7 +84,7 @@ namespace MatrianMiraiBot.Coms.FiveGames
 
             for (int i = 1; i <= Col; i++)
             {
-                Draw.DrawString((i - 1).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(i * Pixel, 0));
+                Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(i * Pixel, 0));
                 int x = i * Pixel;
                 Draw.DrawLine(p, new Point(x, Pixel), new Point(x, LayoutMap.Height));
             }
@@ -147,12 +147,10 @@ namespace MatrianMiraiBot.Coms.FiveGames
         /// <returns></returns>
         public async Task<bool> SetLayout(int r, int c)
         {
-            r++;
-            c++;
             if (r >= Row || c >= Col || r <= 0 || r <= 0 || Layout[r, c] != 0)
                 return false;
 
-            Layout[r - 1, c - 1] = DoPlayer.Index;
+            Layout[r, c] = DoPlayer.Index;
             Draw.FillEllipse(Brushes[DoPlayer.Index - 1], new Rectangle(c * Pixel, r * Pixel, Pixel, Pixel));
             var idx = DoPlayer.Index % GamePlayers.Count;
             DoPlayer = GamePlayers[idx] as FiveGamePlayer;
