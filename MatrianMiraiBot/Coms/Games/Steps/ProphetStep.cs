@@ -37,7 +37,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             if (commandItem.Command.Equals("check"))
             {
                 int index = Convert.ToInt32(commandItem.Contents.First());
-                IPlayer player = command.GameInfo.GetPlayer(index);
+                IPlayer player = command.GetGameInfo<GameInfo>().GetPlayer(index);
                 await command.GameInput.ReplyTemp("这个人的身份是 : {0}".Format(player.Identity == IdentityType.Wolfer ? "狼" : "好"));
                 Next(command);
             }
@@ -49,14 +49,14 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override string GetInitMessage(GameCommand command)
         {
-            var list = command.GameInfo.BuildCanKillList();
+            var list = command.GetGameInfo<GameInfo>().BuildCanKillList();
             string content = "请输入要查看的玩家的身份序号(-check {序号}) : \n" + list.ToIndexMessage();
             return content;
         }
 
         public override bool IsEmpty(GameCommand command)
         {
-            var prophet = command.GameInfo.GetPlayerByIdentity(IdentityType.Propheter).FirstOrDefault();
+            var prophet = command.GetGameInfo<GameInfo>().GetPlayerByIdentity(IdentityType.Propheter).FirstOrDefault();
             return prophet == null;
         }
     }

@@ -22,7 +22,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
         public override async Task DoAction(GameCommand command)
         {
             //第一天
-            if(command.GameInfo.Date == 1)
+            if(command.GetGameInfo<GameInfo>().Date == 1)
             {
                 command.GameState = GameState.SheriffSpeekStep;
             }

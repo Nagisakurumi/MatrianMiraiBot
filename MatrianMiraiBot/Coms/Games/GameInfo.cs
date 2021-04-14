@@ -13,12 +13,15 @@ namespace MatrianMiraiBot.Coms.Games
     /// <summary>
     /// 游戏信息
     /// </summary>
-    public class GameInfo
+    public class GameInfo : IGameInfo
     {
         /// <summary>
         /// 玩家列表
         /// </summary>
-        public List<IPlayer> Players { get; set; } = new List<IPlayer>();
+        public List<IPlayer> Players
+        {
+            get => this.GamePlayers.Cast<IPlayer>().ToList();
+        }
         /// <summary>
         /// 身份集合
         /// </summary>
@@ -26,28 +29,12 @@ namespace MatrianMiraiBot.Coms.Games
              IdentityType.Farmer,IdentityType.Farmer,IdentityType.Farmer, IdentityType.Hunter, IdentityType.Propheter, IdentityType.Witcher, IdentityType.Wolfer
             , IdentityType.Wolfer, IdentityType.Wolfer
         };
-        /// <summary>
-        /// 基础玩家信息
-        /// </summary>
-        public List<GamePlayerBaseInfo> BaseInfos { get; set; } = new List<GamePlayerBaseInfo>();
-
-        /// <summary>
-        /// 最大玩家数量
-        /// </summary>
-        public static int MaxPlayerCount = 9;
-        /// <summary>
-        /// 是否满足玩家
-        /// </summary>
-        public bool IsFullPlayer { get => BaseInfos.Count == MaxPlayerCount; }
 
         /// <summary>
         /// 可以被杀害的列表
         /// </summary>
         public List<IPlayer> CanKilledList { get; set; } = new List<IPlayer>();
-        /// <summary>
-        /// 随机
-        /// </summary>
-        private Random Random { get; set; } = new Random();
+
         /// <summary>
         /// 即将被狼人杀害的对象
         /// </summary>
@@ -61,38 +48,32 @@ namespace MatrianMiraiBot.Coms.Games
         /// </summary>
         public IPlayer GunKilled { get; set; }
         /// <summary>
-        /// 游戏状态
-        /// </summary>
-        public GameState GameState { get; set; } = GameState.Closed;
-        /// <summary>
         /// 日期
         /// </summary>
         public int Date { get; set; }
-        /// <summary>
-        /// 添加基础玩家信息
-        /// </summary>
-        /// <param name="baseInfo"></param>
-        public bool AddBaseInfo(GamePlayerBaseInfo baseInfo)
+
+
+        public GameInfo()
         {
-            if (IsFullPlayer) return false;
-            BaseInfos.Add(baseInfo);
-            return true;
+            GameState = Games.Enums.GameState.Closed;
+            MaxPlayerCount = 9;
         }
+
         /// <summary>
         /// 初始化身份
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> InitIdentity(GameInput gameInput)
+        public override async Task<bool> Init(GameInput gameInput)
         {
             if (!IsFullPlayer) return false;
-            Players.Clear();
+            GamePlayers.Clear();
             List<IdentityType> values = Identities.ShuffleCopy(Random);
             int playerIndex = 0;
             for (int i = MaxPlayerCount - 1; i >= 0 ; i--)
             {
                 int index = Random.Next(0, i + 1);
                 IPlayer player = IPlayer.Factory(values[index]);
-                Players.Add(player);
+                GamePlayers.Add(player);
                 player.Init(BaseInfos[playerIndex++]);
                 values.RemoveAt(index);
             }
@@ -264,6 +245,10 @@ namespace MatrianMiraiBot.Coms.Games
                 return false;
             }
             return null;
+        }
+
+        public override void Dispose()
+        {
         }
     }
 }

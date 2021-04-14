@@ -4,10 +4,12 @@ using Mirai_CSharp;
 using Mirai_CSharp.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MatrianMiraiBot.Coms.Games
+namespace MatrianMiraiBot.Coms
 {
     /// <summary>
     /// 游戏输入内容
@@ -56,6 +58,25 @@ namespace MatrianMiraiBot.Coms.Games
                 return Mirai.SendGroupMessageAsync(GroupInfo.Id, message.ToMessage());
             else
                 return null;
+        }
+
+        /// <summary>
+        /// 回复组消息
+        /// </summary>
+        /// <param name="urls"></param>
+        /// <returns></returns>
+        public async Task<int> ReplyGroupImg(Stream imageStream)
+        {
+            //MessageChain
+            ImageMessage message = await Mirai.UploadPictureAsync(UploadTarget.Group, imageStream);
+            //ImageMessage message = new ImageMessage(null, null, "data/net.mamoe.mirai-api-http/images/80245079ab39489f993f31b0a2b85676.jpeg");
+            //message.Path = null;
+            //message.ImageId = message.ImageId.Replace("jpeg", "mirai").Replace("jpg", "mirai");
+            imageStream.Dispose();
+            if (GroupInfo != null)
+                return await Mirai.SendGroupMessageAsync(GroupInfo.Id, message);
+            else
+                return 0;
         }
 
         /// <summary>

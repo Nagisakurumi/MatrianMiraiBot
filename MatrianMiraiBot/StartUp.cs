@@ -20,7 +20,7 @@ namespace MatrianMiraiBot
             // 你也可以不在这里 await using, 不过使用完 session 后请务必调用 DisposeAsync 方法
             await using MiraiHttpSession session = new MiraiHttpSession();
             // 把你实现了 Mirai_CSharp.Plugin.Interfaces 下的接口的类给 new 出来, 然后作为插件塞给 session
-            WolfKillPlugin plugin = new WolfKillPlugin();
+            GamePlugin plugin = new GamePlugin();
             // 你也可以一个个绑定事件。比如 session.GroupMessageEvt += plugin.GroupMessage;
             // 手动绑定事件后不要再调用AddPlugin, 否则可能导致重复调用
             session.AddPlugin(plugin);

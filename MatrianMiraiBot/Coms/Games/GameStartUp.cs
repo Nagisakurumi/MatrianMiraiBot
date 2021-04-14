@@ -14,88 +14,35 @@ namespace MatrianMiraiBot.Coms.Games
     /// <summary>
     /// 游戏启动容器
     /// </summary>
-    public class GameStartUp
+    public class GameStartUp : IGame
     {
-
         /// <summary>
-        /// 起始命令
+        /// 命令
         /// </summary>
-        public string CommandStart { get; set; } = "-game";
+        public static string GameStartCommand = "-game";
         /// <summary>
-        /// 群信息
+        /// 命令
         /// </summary>
-        public IGroupInfo GroupInfo { get; set; }
-        /// <summary>
-        /// 玩家
-        /// </summary>
-        public GameInfo GameInfo { get; set; } = new GameInfo();
-        /// <summary>
-        /// 步骤
-        /// </summary>
-        public Dictionary<GameState, IStep> Steps { get; set; } = new Dictionary<GameState, IStep>() {
-            { GameState.AddPlayer, new AddPlayerStep() },{ GameState.Closed, new ClosedStep() },{ GameState.HunterStep, new HunterStep() },
-            { GameState.Night, new NightStep() },{ GameState.Over, new OverStep() },{ GameState.ProphetStep, new ProphetStep() },{ GameState.SheriffMoveStep, new SheriffMoveStep() },
-            { GameState.SheriffSpeekStep, new SheriffSpeekStep() },{ GameState.SheriffVotedStep, new SheriffVotedStep() },{ GameState.TalkAboutStep, new TalkAboutStep() },
-            { GameState.VotedStep, new VotedStep() },{ GameState.WhiteStep, new WhiteStep() },{ GameState.WitchStep, new WitcherStep() },{ GameState.WolfKillStep, new WolfKillStep() },
-            
-        };
+        public static string GameDestoryCommand = "-game -destory";
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="groupInfo"></param>
-        public GameStartUp(IGroupInfo groupInfo)
+        public GameStartUp(IGroupInfo groupInfo) : base(groupInfo)
         {
-            GroupInfo = groupInfo;
+            GameInfo = new GameInfo();
+            Steps = new Dictionary<IGameState, IGameStep>() {
+                { GameState.AddPlayer, new AddPlayerStep() },{ GameState.Closed, new ClosedStep() },{ GameState.HunterStep, new HunterStep() },
+                { GameState.Night, new NightStep() },{ GameState.Over, new OverStep() },{ GameState.ProphetStep, new ProphetStep() },{ GameState.SheriffMoveStep, new SheriffMoveStep() },
+                { GameState.SheriffSpeekStep, new SheriffSpeekStep() },{ GameState.SheriffVotedStep, new SheriffVotedStep() },{ GameState.TalkAboutStep, new TalkAboutStep() },
+                { GameState.VotedStep, new VotedStep() },{ GameState.WhiteStep, new WhiteStep() },{ GameState.WitchStep, new WitcherStep() },{ GameState.WolfKillStep, new WolfKillStep() },
+
+            };
+            CommandStart = GameStartCommand;
         }
 
-        /// <summary>
-        /// 处理命令
-        /// </summary>
-        /// <param name="gameInput"></param>
-        public async Task DealCommand(GameInput gameInput)
+        public override void Dispose()
         {
-            if (gameInput.GroupInfo.Id != this.GroupInfo.Id) return;
-
-            if (!gameInput.Command.StartsWith(CommandStart)) return;
-            GameCommand gameCommand = null;
-            try
-            {
-                var command = gameInput.Command.Substring(CommandStart.Length);
-                gameCommand = new GameCommand(command, gameInput, GameInfo);
-
-                await Step(gameCommand);
-            }
-            catch(Exception e)
-            {
-                await gameInput.ReplyGroup(e.Message);
-                return;
-            }
-
-
         }
-
-        /// <summary>
-        /// 执行命令
-        /// </summary>
-        /// <param name="gameCommand"></param>
-        public async Task Step(GameCommand gameCommand)
-        {
-            //步骤
-            var step = Steps[gameCommand.GameState];
-
-            if (gameCommand.IsRunNextState)
-            {
-                await step.Init(gameCommand);
-            }
-            else
-            {
-                await step.DoAction(gameCommand);
-            }
-            if (gameCommand.IsRunNextState)
-            {
-                await Step(gameCommand);
-            }
-        }
-
     }
 }

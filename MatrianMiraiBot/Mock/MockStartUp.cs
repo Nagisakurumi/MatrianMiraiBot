@@ -1,4 +1,5 @@
-﻿using MatrianMiraiBot.Coms.Games;
+﻿using MatrianMiraiBot.Coms;
+using MatrianMiraiBot.Coms.Games;
 using MatrianMiraiBot.Coms.Games.Enums;
 using MatrianMiraiBot.Expends;
 using MatrianMiraiBot.Plguins;
@@ -16,7 +17,7 @@ namespace MatrianMiraiBot.Mock
         /// <summary>
         /// 插件
         /// </summary>
-        public WolfKillPlugin Plugin { get; set; } = new WolfKillPlugin();
+        public GamePlugin Plugin { get; set; } = new GamePlugin();
 
         public WolfGameMock Session = new WolfGameMock();
 
@@ -130,56 +131,40 @@ namespace MatrianMiraiBot.Mock
 
         public async Task<bool> DoPlayer()
         {
-            GameState state = Plugin.game.GameInfo.GameState;
-            GameInfo gameInfo = Plugin.game.GameInfo;
+            GameState state = Plugin.game.GameInfo.GameState as GameState;
+            GameInfo gameInfo = Plugin.game.GameInfo as GameInfo;
             List<IPlayer> players = null;
-            switch (state)
+            if(state == GameState.WolfKillStep)
             {
-                case GameState.AddPlayer:
-                    break;
-                case GameState.Closed:
-                    break;
-                case GameState.Night:
-                    break;
-                case GameState.WhiteStep:
-                    break;
-                case GameState.WolfKillStep:
-                    players = gameInfo.GetPlayerByIdentity( IdentityType.Wolfer).ToList();
-                    break;
-                case GameState.WitchStep:
-                    players = gameInfo.GetPlayerByIdentity(IdentityType.Witcher).ToList();
-                    break;
-                case GameState.HunterStep:
-                    players = gameInfo.GetPlayerByIdentity(IdentityType.Hunter).ToList();
-                    break;
-                case GameState.ProphetStep:
-                    players = gameInfo.GetPlayerByIdentity(IdentityType.Propheter).ToList();
-                    break;
-                case GameState.TalkAboutStep:
-                    break;
-                case GameState.SheriffSpeekStep:
-                    break;
-                case GameState.VotedStep:
-                case GameState.SheriffVotedStep:
-                    players = gameInfo.Players;
-                    Console.WriteLine("请输入要投票的目标序号 : ");
-                    int index = Convert.ToInt32(Console.ReadLine());
-                    MockGroupMessageEventArgs mockGroup = null;
-                    foreach (var item in players)
-                    {
-                        mockGroup = new MockGroupMessageEventArgs("-game -vote " + index, item.PlayerId, item.PlayerNickName);
-                        await Plugin.GroupMessage(Session, mockGroup);
-                    }
-                    mockGroup = new MockGroupMessageEventArgs("-game -next " + index, players[0].PlayerId, players[0].PlayerNickName);
+                players = gameInfo.GetPlayerByIdentity(IdentityType.Wolfer).ToList();
+            }
+            else if (state == GameState.WitchStep)
+            {
+                players = gameInfo.GetPlayerByIdentity(IdentityType.Witcher).ToList();
+            }
+            else if (state == GameState.HunterStep)
+            {
+                players = gameInfo.GetPlayerByIdentity(IdentityType.Hunter).ToList();
+            }
+            else if (state == GameState.ProphetStep)
+            {
+                players = gameInfo.GetPlayerByIdentity(IdentityType.Propheter).ToList();
+            }
+            else if (state == GameState.VotedStep || state == GameState.SheriffVotedStep)
+            {
+                players = gameInfo.Players;
+                Console.WriteLine("请输入要投票的目标序号 : ");
+                int index = Convert.ToInt32(Console.ReadLine());
+                MockGroupMessageEventArgs mockGroup = null;
+                foreach (var item in players)
+                {
+                    mockGroup = new MockGroupMessageEventArgs("-game -vote " + index, item.PlayerId, item.PlayerNickName);
                     await Plugin.GroupMessage(Session, mockGroup);
+                }
+                mockGroup = new MockGroupMessageEventArgs("-game -next " + index, players[0].PlayerId, players[0].PlayerNickName);
+                await Plugin.GroupMessage(Session, mockGroup);
 
-                    return true;
-                case GameState.SheriffMoveStep:
-                    break;
-                case GameState.Over:
-                    break;
-                default:
-                    break;
+                return true;
             }
 
             if (players == null || players.Count == 0) return false;

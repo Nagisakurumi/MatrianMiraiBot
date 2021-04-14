@@ -27,7 +27,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override async Task DoAction(GameCommand command)
         {
-            var witcher = command.GameInfo.GetPlayerByIdentity(IdentityType.Witcher).FirstOrDefault() as Witcher;
+            var witcher = command.GetGameInfo<GameInfo>().GetPlayerByIdentity(IdentityType.Witcher).FirstOrDefault() as Witcher;
             if (!CheckIdentity(command))
             {
                 await command.GameInput.ReplyTemp("只有女巫才可以操作!");
@@ -45,17 +45,17 @@ namespace MatrianMiraiBot.Coms.Games.Steps
                 if (item.Command.Equals("save") && witcher.Antidote > 0)
                 {
                     witcher.Antidote--;
-                    command.GameInfo.WolferWillKilled = null;
+                    command.GetGameInfo<GameInfo>().WolferWillKilled = null;
                     await command.GameInput.ReplyTemp("成功救下!");
                 }
                 else if (item.Command.Equals("poison") && witcher.Poison > 0)
                 {
                     int index = Convert.ToInt32(item.Contents.First());
                     //获取期望毒杀的目标
-                    var player = command.GameInfo.GetPlayer(index);
+                    var player = command.GetGameInfo<GameInfo>().GetPlayer(index);
                     if (player != null)
                     {
-                        command.GameInfo.PoisonKilled = player;
+                        command.GetGameInfo<GameInfo>().PoisonKilled = player;
                         witcher.Poison--;
                     }
                 }
@@ -66,12 +66,12 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override string GetInitMessage(GameCommand command)
         {
-            var player = command.GameInfo.GetPlayerByIdentity(IdentityType.Witcher).FirstOrDefault();
+            var player = command.GetGameInfo<GameInfo>().GetPlayerByIdentity(IdentityType.Witcher).FirstOrDefault();
             if (player == null)
                 return null;
             var witcher = player as Witcher;
             string content = "";
-            var killed = command.GameInfo.WolferWillKilled;
+            var killed = command.GetGameInfo<GameInfo>().WolferWillKilled;
             if (witcher != null)
             {
                 if (killed != null)
@@ -84,7 +84,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
                 }
                 if (witcher.Poison > 0)
                 {
-                    var list = command.GameInfo.BuildCanKillList();
+                    var list = command.GetGameInfo<GameInfo>().BuildCanKillList();
                     content += "是否使用毒药 (-poison {序号})\n" + list.ToIndexMessage();
                 }
             }
@@ -94,7 +94,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override bool IsEmpty(GameCommand command)
         {
-            var player = command.GameInfo.GetPlayerByIdentity(IdentityType.Witcher).FirstOrDefault() as Witcher;
+            var player = command.GetGameInfo<GameInfo>().GetPlayerByIdentity(IdentityType.Witcher).FirstOrDefault() as Witcher;
             return player == null || (player.Antidote == 0 && player.Poison == 0);
         }
     }

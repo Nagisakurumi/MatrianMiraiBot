@@ -26,8 +26,8 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             if (commandItem.Command.Equals("move"))
             {
                 var index = Convert.ToInt32(commandItem.Contents.First());
-                IPlayer target = command.GameInfo.GetPlayer(index);
-                if(target == null && command.GameInfo.GetAllKilledPlayer().Contains(target))
+                IPlayer target = command.GetGameInfo<GameInfo>().GetPlayer(index);
+                if(target == null && command.GetGameInfo<GameInfo>().GetAllKilledPlayer().Contains(target))
                 {
                     await command.GameInput.ReplyGroup("请输入正确的移交对象!");
                     return;
@@ -42,7 +42,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override string GetInitMessage(GameCommand command)
         {
-            return "请选择警徽的移交对象! 输入 (-move {序号}) : \n " + command.GameInfo.BuildCanKillList().ToIndexMessage();
+            return "请选择警徽的移交对象! 输入 (-move {序号}) : \n " + command.GetGameInfo<GameInfo>().BuildCanKillList().ToIndexMessage();
         }
 
         public override bool IsEmpty(GameCommand command)

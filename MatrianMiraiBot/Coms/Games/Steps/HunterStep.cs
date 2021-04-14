@@ -34,8 +34,8 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             if (commandItem.Command.Equals("gun"))
             {
                 int index = Convert.ToInt32(commandItem.Contents.FirstOrDefault());
-                var player = command.GameInfo.CanKilledList[index];
-                command.GameInfo.GunKilled = player;
+                var player = command.GetGameInfo<GameInfo>().CanKilledList[index];
+                command.GetGameInfo<GameInfo>().GunKilled = player;
                 command.IsRunNextState = true;
                 command.GameState = NextState;
             }
@@ -49,7 +49,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
         {
             if (!IsEmpty(command))
             {
-                return "您已经被杀害，是否使用技能。请选择目标(-gun {序号}) : \n" + command.GameInfo.BuildCanKillList().ToIndexMessage();
+                return "您已经被杀害，是否使用技能。请选择目标(-gun {序号}) : \n" + command.GetGameInfo<GameInfo>().BuildCanKillList().ToIndexMessage();
             }
             return "今晚和你没关系!";
         }
@@ -60,8 +60,8 @@ namespace MatrianMiraiBot.Coms.Games.Steps
         /// <returns></returns>
         public override bool IsEmpty(GameCommand command)
         {
-            var hunter = command.GameInfo.GetPlayerByIdentity(IdentityType.Hunter).FirstOrDefault();
-            if(command.GameInfo.PoisonKilled == hunter || command.GameInfo.WolferWillKilled == hunter)
+            var hunter = command.GetGameInfo<GameInfo>().GetPlayerByIdentity(IdentityType.Hunter).FirstOrDefault();
+            if(command.GetGameInfo<GameInfo>().PoisonKilled == hunter || command.GetGameInfo<GameInfo>().WolferWillKilled == hunter)
             {
                 return false;
             }

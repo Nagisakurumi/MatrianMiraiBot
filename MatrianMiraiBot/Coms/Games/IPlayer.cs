@@ -11,7 +11,7 @@ namespace MatrianMiraiBot.Coms.Games
     /// <summary>
     /// 玩家
     /// </summary>
-    public abstract class IPlayer
+    public abstract class IPlayer : IGamePlayer
     {
         /// <summary>
         /// 身份
@@ -25,19 +25,6 @@ namespace MatrianMiraiBot.Coms.Games
         /// 是否是警长
         /// </summary>
         public bool IsSheriff { get; set; }
-        /// <summary>
-        /// 是否存活
-        /// </summary>
-        public bool IsAlive { get; set; }
-        /// <summary>
-        /// 玩家id
-        /// </summary>
-        public long PlayerId { get; set; }
-        /// <summary>
-        /// 昵称
-        /// </summary>
-        public string PlayerNickName { get; set; }
-
         /// <summary>
         /// 票数
         /// </summary>

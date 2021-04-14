@@ -26,9 +26,9 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             var commandItem = command.GetCommandIndex(0);
             if (commandItem.Command.Equals("next"))
             {
-                command.GameInfo.GetAllKilledPlayer().ForEach(p => p.IsAlive = false);
-                command.GameInfo.InitKilleds();
-                command.GameInfo.Date++;
+                command.GetGameInfo<GameInfo>().GetAllKilledPlayer().ForEach(p => p.IsAlive = false);
+                command.GetGameInfo<GameInfo>().InitKilleds();
+                command.GetGameInfo<GameInfo>().Date++;
 
                 Next(command);
             }

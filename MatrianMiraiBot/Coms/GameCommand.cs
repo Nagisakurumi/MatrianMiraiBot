@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MatrianMiraiBot.Coms.Games
+namespace MatrianMiraiBot.Coms
 {
     /// <summary>
     /// 游戏输入命令
@@ -25,7 +25,7 @@ namespace MatrianMiraiBot.Coms.Games
         /// <summary>
         /// 游戏玩家信息
         /// </summary>
-        public GameInfo GameInfo { get; set; }
+        public IGameInfo GameInfo { get; set; }
         /// <summary>
         /// 随机
         /// </summary>
@@ -33,7 +33,7 @@ namespace MatrianMiraiBot.Coms.Games
         /// <summary>
         /// 游戏当前状态
         /// </summary>
-        public GameState GameState { get => GameInfo.GameState; set => GameInfo.GameState = value; }
+        public IGameState GameState { get => GameInfo.GameState; set => GameInfo.GameState = value; }
         /// <summary>
         /// 是否需要运行一下下一个阶段
         /// </summary>
@@ -43,11 +43,22 @@ namespace MatrianMiraiBot.Coms.Games
         /// </summary>
         /// <param name="command"></param>
         /// <param name="Mirai"></param>
-        public GameCommand(string command, GameInput mirai, GameInfo gameInfo)
+        public GameCommand(string command, GameInput mirai, IGameInfo gameInfo)
         {
             this.GameInput = mirai;
             this.GameInfo = gameInfo;
 
+            this.Commands.AddRange(ConvertToCommands(command));
+
+        }
+        /// <summary>
+        /// 转换为命令
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public static List<CommandItem> ConvertToCommands(string command)
+        {
+            List<CommandItem> commands = new List<CommandItem>();
             List<string> cs = command.Split('-').ToList();
             if (cs.Count == 0) throw new Exception("命令错误!");
 
@@ -56,9 +67,9 @@ namespace MatrianMiraiBot.Coms.Games
             foreach (var item in cs)
             {
                 if (item.Equals("") || item.Equals(" ")) continue;
-                Commands.Add(new CommandItem(item));
+                commands.Add(new CommandItem(item));
             }
-
+            return commands;
         }
 
         /// <summary>
@@ -86,11 +97,29 @@ namespace MatrianMiraiBot.Coms.Games
         /// </summary>
         /// <returns></returns>
         /// <param name="state"></param>
-        public async Task Empty(GameState state)
+        public async Task Empty(IGameState state)
         {
             await WaitRandomTime();
             this.GameState = state;
             this.IsRunNextState = true;
+        }
+        /// <summary>
+        /// 获取指定类型的游戏信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T GetGameInfo<T>() where T : IGameInfo
+        {
+            return (T)this.GameInfo;
+        }
+        /// <summary>
+        /// 获取指定类型的游戏状态
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T GetGameState<T>() where T : IGameState
+        {
+            return (T)this.GameState;
         }
     }
 }

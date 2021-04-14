@@ -26,7 +26,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override string GetInitMessage(GameCommand command)
         {
-            bool res = command.GameInfo.IsGameOver().Value;
+            bool res = command.GetGameInfo<GameInfo>().IsGameOver().Value;
             return "游戏结束 狼人 : {0}, 神民 : {1}".Format(res ? "失败" : "胜利", res ? "胜利" : "失败");
         }
 

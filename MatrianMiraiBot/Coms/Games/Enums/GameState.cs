@@ -7,66 +7,68 @@ namespace MatrianMiraiBot.Coms.Games.Enums
     /// <summary>
     /// 当前进行的游戏状态
     /// </summary>
-    public enum GameState
+    public class GameState : IGameState
     {
+
+        private GameState(int value):base(value) { }
         /// <summary>
         /// 参赛阶段
         /// </summary>
-        AddPlayer,
+        public static GameState AddPlayer = new GameState(1);
 
         /// <summary>
         /// 游戏结束
         /// </summary>
-        Closed,
+        public static GameState Closed = new GameState(2);
 
         /// <summary>
         /// 夜晚阶段
         /// </summary>
-        Night,
+        public static GameState Night = new GameState(3);
         /// <summary>
         /// 白天阶段
         /// </summary>
-        WhiteStep,
+        public static GameState WhiteStep = new GameState(4);
         /// <summary>
         /// 狼人杀人阶段
         /// </summary>
-        WolfKillStep,
+        public static GameState WolfKillStep = new GameState(5);
 
         /// <summary>
         /// 女巫阶段
         /// </summary>
-        WitchStep,
+        public static GameState WitchStep = new GameState(6);
         /// <summary>
         /// 猎人阶段
         /// </summary>
-        HunterStep,
+        public static GameState HunterStep = new GameState(7);
         /// <summary>
         /// 预言家阶段
         /// </summary>
-        ProphetStep,
+        public static GameState ProphetStep = new GameState(8);
         /// <summary>
         /// 发言阶段
         /// </summary>
-        TalkAboutStep,
+        public static GameState TalkAboutStep = new GameState(9);
         /// <summary>
         /// 白天投票阶段
         /// </summary>
-        VotedStep,
+        public static GameState VotedStep = new GameState(10);
         /// <summary>
         /// 警长发言阶段
         /// </summary>
-        SheriffSpeekStep,
+        public static GameState SheriffSpeekStep = new GameState(11);
         /// <summary>
         /// 警长投票阶段
         /// </summary>
-        SheriffVotedStep,
+        public static GameState SheriffVotedStep = new GameState(12);
         /// <summary>
         /// 移交警徽
         /// </summary>
-        SheriffMoveStep,
+        public static GameState SheriffMoveStep = new GameState(13);
         /// <summary>
         /// 游戏结束
         /// </summary>
-        Over,
+        public static GameState Over = new GameState(14);
     }
 }

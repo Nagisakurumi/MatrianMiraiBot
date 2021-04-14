@@ -22,7 +22,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override async Task DoAction(GameCommand command)
         {
-            if(command.GameInfo.BaseInfos.Count >= GameInfo.MaxPlayerCount)
+            if(command.GameInfo.BaseInfos.Count >= command.GameInfo.MaxPlayerCount)
             {
                 await command.GameInput.ReplyGroup("人数已经满了!");
             }
@@ -30,7 +30,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             var commandItem = command.GetCommandIndex(0);
             if (commandItem.Command.Equals("next"))
             {
-                await command.GameInfo.InitIdentity(command.GameInput);
+                await command.GetGameInfo<GameInfo>().Init(command.GameInput);
                 Next(command);
                 return;
             }
@@ -38,7 +38,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             if (player == null)
             {
                 GamePlayerBaseInfo baseInfo = new GamePlayerBaseInfo() { Id = command.GameInput.Sender.Id, Name = command.GameInput.Sender.Name };
-                command.GameInfo.AddBaseInfo(baseInfo);
+                command.GetGameInfo<GameInfo>().AddBaseInfo(baseInfo);
                 await command.GameInput.ReplyGroup("玩家{0},成功参与游戏,请耐心等待其他玩家的加入!".Format(baseInfo.Name));
             }
             else
@@ -46,9 +46,9 @@ namespace MatrianMiraiBot.Coms.Games.Steps
                 await command.GameInput.ReplyGroup("不能重复参加!");
             }
             //进入下一个环节
-            if(command.GameInfo.BaseInfos.Count == GameInfo.MaxPlayerCount)
+            if(command.GameInfo.BaseInfos.Count == command.GameInfo.MaxPlayerCount)
             {
-                await command.GameInfo.InitIdentity(command.GameInput);
+                await command.GetGameInfo<GameInfo>().Init(command.GameInput);
                 Next(command);
                 return;
             }
@@ -56,7 +56,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override string GetInitMessage(GameCommand command)
         {
-            return "输入 (-add) 参加, (-next)开始,目标人数 {0}".Format(GameInfo.MaxPlayerCount);
+            return "输入 (-add) 参加, (-next)开始,目标人数 {0}".Format(command.GameInfo.MaxPlayerCount);
         }
 
         public override bool IsEmpty(GameCommand command)

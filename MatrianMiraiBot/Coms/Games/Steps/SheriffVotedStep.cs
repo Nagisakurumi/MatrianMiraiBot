@@ -26,7 +26,7 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             if (commandItem.Command.Equals("next"))
             {
                 var list = new List<IPlayer>();
-                command.GameInfo.CanKilledList.ForEach(p => {
+                command.GetGameInfo<GameInfo>().CanKilledList.ForEach(p => {
                     if (p.VotedPlayer != null)
                         list.Add(p.VotedPlayer); });
                 //获取票数最多的
@@ -43,8 +43,8 @@ namespace MatrianMiraiBot.Coms.Games.Steps
             else if (commandItem.Command.Equals("vote"))
             {
                 var index = Convert.ToInt32(commandItem.Contents.First());
-                IPlayer player = command.GameInfo.GetPlayer(index);
-                IPlayer self = command.GameInfo.GetPlayerById(command.GameInput.Sender.Id);
+                IPlayer player = command.GetGameInfo<GameInfo>().GetPlayer(index);
+                IPlayer self = command.GetGameInfo<GameInfo>().GetPlayerById(command.GameInput.Sender.Id);
                 if (self == null)
                 {
                     await command.GameInput.ReplyTemp("您没有参与游戏，或则您已经出局!");
@@ -57,8 +57,8 @@ namespace MatrianMiraiBot.Coms.Games.Steps
 
         public override string GetInitMessage(GameCommand command)
         {
-            command.GameInfo.ResetVoted();
-            return "输入命令 (-next) 进入下一个阶段, 输入命令 (-vote {序号}) 进行投票 : \n" + command.GameInfo.BuildCanKillList().ToIndexMessage();
+            command.GetGameInfo<GameInfo>().ResetVoted();
+            return "输入命令 (-next) 进入下一个阶段, 输入命令 (-vote {序号}) 进行投票 : \n" + command.GetGameInfo<GameInfo>().BuildCanKillList().ToIndexMessage();
         }
 
         public override bool IsEmpty(GameCommand command)
