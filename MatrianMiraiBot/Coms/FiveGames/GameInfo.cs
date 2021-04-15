@@ -22,7 +22,7 @@ namespace MatrianMiraiBot.Coms.FiveGames
         /// <summary>
         /// 一个格子的像素
         /// </summary>
-        public int Pixel { get; set; } = 15;
+        public int Pixel { get; set; } = 20;
         /// <summary>
         /// 玩家数量
         /// </summary>
@@ -75,20 +75,27 @@ namespace MatrianMiraiBot.Coms.FiveGames
 
             for (int i = 1; i <= Row; i++)
             {
-                Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(0, i * Pixel));
-
+                if (i != Row)
+                {
+                    Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(0, i * Pixel));
+                    Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(LayoutMap.Width - Pixel, i * Pixel));
+                }
                 int y = i * Pixel;
-                Draw.DrawLine(p, new Point(Pixel, y), new Point(LayoutMap.Width, y));
+                Draw.DrawLine(p, new Point(Pixel, y), new Point(LayoutMap.Width - Pixel, y));
             }
-            Draw.DrawLine(p, new Point(Pixel, LayoutMap.Height), new Point(LayoutMap.Width, LayoutMap.Height));
+            //Draw.DrawLine(p, new Point(Pixel, LayoutMap.Height), new Point(LayoutMap.Width, LayoutMap.Height));
 
             for (int i = 1; i <= Col; i++)
             {
-                Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(i * Pixel, 0));
+                if (i != Col)
+                {
+                    Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(i * Pixel, 0));
+                    Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(i * Pixel, LayoutMap.Height - Pixel));
+                }
                 int x = i * Pixel;
-                Draw.DrawLine(p, new Point(x, Pixel), new Point(x, LayoutMap.Height));
+                Draw.DrawLine(p, new Point(x, Pixel), new Point(x, LayoutMap.Height - Pixel));
             }
-            Draw.DrawLine(p, new Point(LayoutMap.Width, Pixel), new Point(LayoutMap.Width, LayoutMap.Height));
+            //Draw.DrawLine(p, new Point(LayoutMap.Width, Pixel), new Point(LayoutMap.Width, LayoutMap.Height));
         }
         /// <summary>
         /// 初始化
