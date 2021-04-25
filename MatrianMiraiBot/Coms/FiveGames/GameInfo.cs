@@ -44,6 +44,10 @@ namespace MatrianMiraiBot.Coms.FiveGames
         /// </summary>
         public Brush[] Brushes { get; set; } = new Brush[2] { new SolidBrush(Color.Red), new SolidBrush(Color.Black) };
         /// <summary>
+        /// 用于悔棋
+        /// </summary>
+        public Brush WhiteBrush { get; set; } = new SolidBrush(Color.White);
+        /// <summary>
         /// 布局
         /// </summary>
         public int[,] Layout = null;
@@ -159,6 +163,23 @@ namespace MatrianMiraiBot.Coms.FiveGames
 
             Layout[r, c] = DoPlayer.Index;
             Draw.FillEllipse(Brushes[DoPlayer.Index - 1], new Rectangle(c * Pixel, r * Pixel, Pixel, Pixel));
+            var idx = DoPlayer.Index % GamePlayers.Count;
+            DoPlayer = GamePlayers[idx] as FiveGamePlayer;
+            return true;
+        }
+        /// <summary>
+        /// 对上一步的悔棋
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public async Task<bool> ResetLast(int r, int c)
+        {
+            if (Layout[r, c] == 0) return false;
+
+            Layout[r, c] = 0;
+            Draw.FillEllipse(WhiteBrush, new Rectangle(c * Pixel, r * Pixel, Pixel, Pixel));
+            //切换选手
             var idx = DoPlayer.Index % GamePlayers.Count;
             DoPlayer = GamePlayers[idx] as FiveGamePlayer;
             return true;

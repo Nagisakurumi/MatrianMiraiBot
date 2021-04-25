@@ -8,6 +8,14 @@ namespace MatrianMiraiBot.Coms.FiveGames.Steps
 {
     public class PlayStep : IFiveGameStep
     {
+        /// <summary>
+        /// 最后的行
+        /// </summary>
+        public int LastR { get; set; }
+        /// <summary>
+        /// 最后的列
+        /// </summary>
+        public int LastC { get; set; }
 
         public PlayStep()
         {
@@ -23,12 +31,20 @@ namespace MatrianMiraiBot.Coms.FiveGames.Steps
             }
             var gameInfo = command.GetGameInfo<GameInfo>();
             var player = gameInfo.GetPlayerById(command.GameInput.Sender.Id);
-            if(player != gameInfo.DoPlayer)
+            var commandItem = command.Commands[0];
+
+            if (player != gameInfo.DoPlayer)
             {
+                if (commandItem.Command.Equals("reset"))
+                {
+                    await gameInfo.ResetLast(LastR, LastC);
+                    await command.GameInput.ReplyGroupImg(gameInfo.GetImageStream());
+                    return;
+                }
+
                 await command.GameInput.ReplyGroup("当前不是你的回合!");
                 return;
             }
-            var commandItem = command.Commands[0];
             if (commandItem.Command.Equals("p"))
             {
                 var r = Convert.ToInt32(commandItem.Contents[0]);
@@ -39,6 +55,8 @@ namespace MatrianMiraiBot.Coms.FiveGames.Steps
                     await command.GameInput.ReplyGroup("坐标错误!");
                     return;
                 }
+                LastR = r;
+                LastC = c;
                 await command.GameInput.ReplyGroupImg(gameInfo.GetImageStream());
                 var vectorer = gameInfo.IsOver();
                 if(vectorer != null)
@@ -53,7 +71,7 @@ namespace MatrianMiraiBot.Coms.FiveGames.Steps
         public override string GetInitMessage(GameCommand command)
         {
             command.GameInfo.Init(command.GameInput);
-            return "请输入 -p x y 来下子, 当前选手是  : {0}".Format(command.GetGameInfo<GameInfo>().DoPlayer.PlayerNickName);
+            return "请输入 -p x y 来下子, -reset 来悔棋, 当前选手是  : {0}".Format(command.GetGameInfo<GameInfo>().DoPlayer.PlayerNickName);
         }
 
 
