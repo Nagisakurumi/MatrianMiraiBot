@@ -16,7 +16,7 @@ namespace MatrianMiraiBot.Coms
         /// 游戏集合
         /// </summary>
         public List<GameBaseCommand> GameBases { get; set; } = new List<Coms.GameBaseCommand>() {
-            new GameBaseCommand("-game", typeof(Coms.Games.GameStartUp)),new GameBaseCommand("-five", typeof(FiveGames.FiveGame))
+            new GameBaseCommand("-game", typeof(Coms.Games.GameStartUp)),new GameBaseCommand("-five", typeof(FiveGames.FiveGame)),new GameBaseCommand("-joke", typeof(Joke.GetJoke))
         };
         /// <summary>
         /// 运行中的游戏
@@ -63,7 +63,7 @@ namespace MatrianMiraiBot.Coms
             }
             //匹配创建
             var gameBase = GameBases.Where(p => command.StartsWith(p.CreateCommand)).FirstOrDefault();
-            if(gameBase != null)
+            if (gameBase != null)
             {
                 var exist = game.Where(p => command.Equals(p.CommandStart)).FirstOrDefault();
                 if (exist != null)
