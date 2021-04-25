@@ -16,6 +16,10 @@ namespace MatrianMiraiBot.Coms.FiveGames.Steps
         /// 最后的列
         /// </summary>
         public int LastC { get; set; }
+        /// <summary>
+        /// 是否可以悔棋
+        /// </summary>
+        public bool CanReset { get; set; } = false;
 
         public PlayStep()
         {
@@ -37,8 +41,14 @@ namespace MatrianMiraiBot.Coms.FiveGames.Steps
             {
                 if (commandItem.Command.Equals("reset"))
                 {
+                    if (!CanReset)
+                    {
+                        await command.GameInput.ReplyGroup("不能连续悔棋!");
+                        return;
+                    }
                     await gameInfo.ResetLast(LastR, LastC);
                     await command.GameInput.ReplyGroupImg(gameInfo.GetImageStream());
+                    CanReset = false;
                     return;
                 }
 
@@ -57,6 +67,7 @@ namespace MatrianMiraiBot.Coms.FiveGames.Steps
                 }
                 LastR = r;
                 LastC = c;
+                CanReset = true;
                 await command.GameInput.ReplyGroupImg(gameInfo.GetImageStream());
                 var vectorer = gameInfo.IsOver();
                 if(vectorer != null)
