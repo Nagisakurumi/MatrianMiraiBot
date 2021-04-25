@@ -42,12 +42,19 @@ namespace MatrianMiraiBot.Coms.Joke
                 gameCommand = new GameCommand(gameInput.Command, gameInput, GameInfo);
                 string count = gameCommand.Commands[0].Contents[0];
 
-                HttpHelper helper = new HttpHelper("https://autumnfish.cn/");
-                var json = helper.Get(new Dictionary<string, string> { { "num", count }, }, "/api/joke/list");
-                var listJoke = json.ToJObject().GetValue("jokes").ToList();
-                string joker = listJoke.ToString();
 
-                await gameInput.ReplyGroup(joker);
+                HttpHelper helper = new HttpHelper("https://autumnfish.cn/");
+                var json = helper.Get(new Dictionary<string, string> { { "num", "1" }, }, "/api/joke/list");
+                var listJoke = json.ToJObject().GetValue("jokes").ToList();
+
+                string jokes = null;
+                int i = 1;
+                foreach (var joke in listJoke)
+                {
+                    jokes += i++ + "." + joke + "\n";
+                }
+                await gameInput.ReplyGroup(jokes);
+
                 return;
             }
             catch (Exception e)
