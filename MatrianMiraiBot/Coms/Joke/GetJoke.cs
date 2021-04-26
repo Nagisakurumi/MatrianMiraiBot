@@ -44,7 +44,7 @@ namespace MatrianMiraiBot.Coms.Joke
 
 
                 HttpHelper helper = new HttpHelper("https://autumnfish.cn/");
-                var json = helper.Get(new Dictionary<string, string> { { "num", "1" }, }, "/api/joke/list");
+                var json = helper.Get(new Dictionary<string, string> { { "num", count }, }, "/api/joke/list");
                 var listJoke = json.ToJObject().GetValue("jokes").ToList();
 
                 string jokes = null;
