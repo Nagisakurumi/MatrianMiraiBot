@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MatrianMiraiBot.Expends;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -20,13 +21,25 @@ namespace MatrianMiraiBot.Coms.FiveGames
         /// </summary>
         public int Col { get; set; }
         /// <summary>
+        /// 起始X
+        /// </summary>
+        public int StartX { get; set; }
+        /// <summary>
+        /// 起始Y
+        /// </summary>
+        public int StartY { get; set; }
+        /// <summary>
         /// 标题高度
         /// </summary>
-        public int TitleHeight { get; set; } = 40;
+        public int TitleHeight { get; set; } = 55;
         /// <summary>
         /// 一个格子的像素
         /// </summary>
         public int Pixel { get; set; } = 20;
+        /// <summary>
+        /// 字体
+        /// </summary>
+        public Font TextFont { get; set; } = new Font(FontFamily.GenericMonospace, 10);
         /// <summary>
         /// 玩家数量
         /// </summary>
@@ -52,6 +65,10 @@ namespace MatrianMiraiBot.Coms.FiveGames
         /// </summary>
         public Brush WhiteBrush { get; set; } = new SolidBrush(Color.White);
         /// <summary>
+        /// 用于悔棋
+        /// </summary>
+        public Brush BlackBrush { get; set; } = new SolidBrush(Color.Black);
+        /// <summary>
         /// 布局
         /// </summary>
         public int[,] Layout = null;
@@ -66,8 +83,8 @@ namespace MatrianMiraiBot.Coms.FiveGames
         /// <param name="col"></param>
         public GameInfo(int row, int col)
         {
-            Row = row + 1;
-            Col = col + 1;
+            Row = row;
+            Col = col;
             InitLayout(Row, Col);
         }
 
@@ -78,41 +95,88 @@ namespace MatrianMiraiBot.Coms.FiveGames
         /// <param name="c"></param>
         public void InitLayout(int r, int c)
         {
-            
             Layout = new int[Row, Col];
             GameState = FiveGameState.Init;
             MaxPlayerCount = 2;
 
+            int leftIndexWidth = Pixel;
+            StartX = leftIndexWidth;
+            StartY = TitleHeight + leftIndexWidth;
+
+            int width = 0, height = 0;
+            width = leftIndexWidth * 2 + Pixel * Col;
+            height = TitleHeight + leftIndexWidth * 2 + Pixel * Row;
+            if(LayoutMap != null)
+            {
+                this.Draw.Dispose();
+                LayoutMap.Dispose();
+            }
             //创建图片
-            LayoutMap = new Bitmap(Col * Pixel + Pixel, Row * Pixel + Pixel);
+            LayoutMap = new Bitmap(width, height);
             Draw = Graphics.FromImage(LayoutMap);
 
             SolidBrush black = new SolidBrush(Color.Black);
             Pen p = new Pen(black, 2);
             //背景
-            Draw.FillRectangle(new SolidBrush(Color.White), new Rectangle(0, 0, LayoutMap.Width, LayoutMap.Height));
+            Draw.FillRectangle(new SolidBrush(Color.White), new Rectangle(0, 0, width, height));
 
-            for (int i = 1; i <= Row; i++)
+            for (int i = 0; i <= Row; i++)
             {
+                int posHei = StartY + i * Pixel;
                 if (i != Row)
                 {
-                    Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(0, i * Pixel));
-                    Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(LayoutMap.Width - Pixel, i * Pixel));
+                    Draw.DrawString((i + 1).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(0, posHei));
+                    Draw.DrawString((i + 1).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(LayoutMap.Width - leftIndexWidth, posHei));
                 }
-                int y = i * Pixel;
-                Draw.DrawLine(p, new Point(Pixel, y), new Point(LayoutMap.Width - Pixel, y));
+                Draw.DrawLine(p, new Point(StartX, posHei), new Point(LayoutMap.Width - leftIndexWidth, posHei));
             }
-            //Draw.DrawLine(p, new Point(Pixel, LayoutMap.Height), new Point(LayoutMap.Width, LayoutMap.Height));
 
-            for (int i = 1; i <= Col; i++)
+            for (int i = 0; i <= Col; i++)
             {
+                int posWid = StartX + i * Pixel;
                 if (i != Col)
                 {
-                    Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(i * Pixel, 0));
-                    Draw.DrawString((i).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(i * Pixel, LayoutMap.Height - Pixel));
+                    Draw.DrawString((i + 1).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(posWid, TitleHeight));
+                    Draw.DrawString((i + 1).ToString(), new Font(FontFamily.GenericMonospace, 10), black, new PointF(posWid, LayoutMap.Height - leftIndexWidth));
                 }
-                int x = i * Pixel;
-                Draw.DrawLine(p, new Point(x, Pixel), new Point(x, LayoutMap.Height - Pixel));
+                Draw.DrawLine(p, new Point(posWid, StartY), new Point(posWid, LayoutMap.Height - Pixel));
+            }
+        }
+        /// <summary>
+        /// 绘制点
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        /// <param name="brush"></param>
+        private void DrawImage(int row, int col, Brush brush)
+        {
+            Draw.FillEllipse(brush, new Rectangle(StartX + col * Pixel, StartY + row * Pixel, Pixel, Pixel));
+        }
+        /// <summary>
+        /// 更新显示玩家信息
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
+        private void UpdatePlayerInfo(int row, int col, bool isReset = false, bool init = false)
+        {
+            Draw.FillRectangle(WhiteBrush, new Rectangle(0, 0, LayoutMap.Width, TitleHeight));
+            var p1 = GamePlayers.First() as FiveGamePlayer;
+            var p2 = GamePlayers.Last() as FiveGamePlayer;
+            int x = 5;
+            int y_one = 0;
+            int offset = 2;
+            var Pixel = this.Pixel - 5;
+            Draw.FillEllipse(Brushes[p1.Index - 1], new Rectangle(x, y_one, Pixel, Pixel));
+            Draw.DrawString(":" + p1.PlayerNickName, TextFont, BlackBrush, new PointF(x + Pixel + offset, y_one));
+
+            int y = y_one + Pixel + offset;
+            Draw.FillEllipse(Brushes[p2.Index - 1], new Rectangle(x, y, Pixel, Pixel));
+            Draw.DrawString(":" + p2.PlayerNickName, TextFont, BlackBrush, new PointF(x + Pixel + offset, y));
+            if (!init)
+            {
+                string conent = isReset ? "玩家悔棋!" : "当前玩家:{0}, 下子:[{1},{2}]".Format(DoPlayer.PlayerNickName, row + 1, col + 1);
+
+                Draw.DrawString(conent, TextFont, BlackBrush, new PointF(x, y + this.Pixel + offset));
             }
         }
         /// <summary>
@@ -136,6 +200,8 @@ namespace MatrianMiraiBot.Coms.FiveGames
                 GamePlayers.Add(new FiveGamePlayer() { PlayerId = item.Id, PlayerNickName = item.Name, Number = 0, Index = index++ });
             }
             DoPlayer = GamePlayers[this.Random.Next(0, GamePlayers.Count)] as FiveGamePlayer;
+
+            UpdatePlayerInfo(0, 0, false, true);
             return true;
         }
         /// <summary>
@@ -192,11 +258,13 @@ namespace MatrianMiraiBot.Coms.FiveGames
         /// <returns></returns>
         public async Task<bool> SetLayout(int r, int c)
         {
-            if (r >= Row || c >= Col || r <= 0 || r <= 0 || Layout[r, c] != 0)
+            r--;
+            c--;
+            if (r >= Row || c >= Col || r < 0 || r < 0 || Layout[r, c] != 0)
                 return false;
-
             Layout[r, c] = DoPlayer.Index;
-            Draw.FillEllipse(Brushes[DoPlayer.Index - 1], new Rectangle(c * Pixel, r * Pixel, Pixel, Pixel));
+            UpdatePlayerInfo(r, c, false);
+            DrawImage(r, c, Brushes[DoPlayer.Index - 1]);
             var idx = DoPlayer.Index % GamePlayers.Count;
             DoPlayer = GamePlayers[idx] as FiveGamePlayer;
             return true;
@@ -209,13 +277,15 @@ namespace MatrianMiraiBot.Coms.FiveGames
         /// <returns></returns>
         public async Task<bool> ResetLast(int r, int c)
         {
+            r--;
+            c--;
             if (Layout[r, c] == 0) return false;
-
             Layout[r, c] = 0;
-            Draw.FillEllipse(WhiteBrush, new Rectangle(c * Pixel, r * Pixel, Pixel, Pixel));
+            UpdatePlayerInfo(r, c, true);
             //切换选手
             var idx = DoPlayer.Index % GamePlayers.Count;
             DoPlayer = GamePlayers[idx] as FiveGamePlayer;
+            DrawImage(r, c, WhiteBrush);
             return true;
         }
         /// <summary>

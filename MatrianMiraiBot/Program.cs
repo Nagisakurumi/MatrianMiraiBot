@@ -24,9 +24,9 @@ namespace MatrianMiraiBot
             //info.AddBaseInfo(new Coms.GamePlayerBaseInfo() { Id = 112121, Name = "test" });
             //info.Init(null).Wait();
             //info.SetLayout(5, 1).Wait();
-            //info.SetLayout(2, 1).Wait();
-            //info.SetLayout(3, 1).Wait();
-            //info.SetLayout(2, 4).Wait();
+            ////info.SetLayout(2, 1).Wait();
+            ////info.SetLayout(3, 1).Wait();
+            ////info.SetLayout(2, 4).Wait();
             //info.IsOver();
             //info.LayoutMap.Save("test.jpg");
 
