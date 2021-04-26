@@ -20,6 +20,10 @@ namespace MatrianMiraiBot.Coms.FiveGames
         /// </summary>
         public int Col { get; set; }
         /// <summary>
+        /// 标题高度
+        /// </summary>
+        public int TitleHeight { get; set; } = 40;
+        /// <summary>
         /// 一个格子的像素
         /// </summary>
         public int Pixel { get; set; } = 20;
@@ -64,6 +68,17 @@ namespace MatrianMiraiBot.Coms.FiveGames
         {
             Row = row + 1;
             Col = col + 1;
+            InitLayout(Row, Col);
+        }
+
+        /// <summary>
+        /// 初始化布局
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="c"></param>
+        public void InitLayout(int r, int c)
+        {
+            
             Layout = new int[Row, Col];
             GameState = FiveGameState.Init;
             MaxPlayerCount = 2;
@@ -99,7 +114,6 @@ namespace MatrianMiraiBot.Coms.FiveGames
                 int x = i * Pixel;
                 Draw.DrawLine(p, new Point(x, Pixel), new Point(x, LayoutMap.Height - Pixel));
             }
-            //Draw.DrawLine(p, new Point(LayoutMap.Width, Pixel), new Point(LayoutMap.Width, LayoutMap.Height));
         }
         /// <summary>
         /// 初始化
@@ -149,7 +163,27 @@ namespace MatrianMiraiBot.Coms.FiveGames
             LayoutMap.Save(memoryStream, ImageFormat.Jpeg);
             return memoryStream;
         }
+        /// <summary>
+        /// 扩充
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public async Task Expend(int r, int c)
+        {
+            var newR = Row + r;
+            var newC = Col + c;
+            int [,]layout = new int[Row + r, Col + c];
+            for (int i = 0; i < Row; i++)
+            {
+                for (int j = 0; j < Col; j++)
+                {
+                    layout[i, j] = Layout[i, j];
+                }
+            }
 
+
+        }
         /// <summary>
         /// 设置布局
         /// </summary>
